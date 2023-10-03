@@ -4,6 +4,10 @@ from oscar.apps.address.forms import AbstractAddressForm
 UserAddress = get_model('address', 'useraddress')
 
 class UserAddressForm(AbstractAddressForm):
+    """
+    A custom UserAddressForm without the fields 'phone_number' and 'notes'
+    and with a customization to define 'is_default_for_billing' during the initialization.
+    """
 
     class Meta:
         model = UserAddress

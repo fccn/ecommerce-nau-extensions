@@ -3,19 +3,18 @@ Paygate payment processing views in these views the callback pages will be imple
 """
 import logging
 
-from django.views import generic
-from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
-from django.urls import reverse_lazy
-from .forms import UserAddressForm
-
+from django.utils.translation import ugettext_lazy as _
+from django.views import generic
 from oscar.core.loading import get_class, get_model
+
+from .forms import UserAddressForm
 
 logger = logging.getLogger(__name__)
 
-UserAddress = get_model('address', 'UserAddress')
+UserAddress = get_model("address", "UserAddress")
 
-AbstractAddressForm = get_class('address.forms', 'AbstractAddressForm')
+AbstractAddressForm = get_class("address.forms", "AbstractAddressForm")
 
 
 class NauUserAddressCreateView(generic.CreateView, AbstractAddressForm):
@@ -35,7 +34,7 @@ class NauUserAddressCreateView(generic.CreateView, AbstractAddressForm):
         kwargs["user"] = self.request.user
         kwargs["is_default_for_billing"] = True
         return kwargs
-    
+
     def get_initial(self):
         dict = super().get_initial()
 
@@ -47,16 +46,16 @@ class NauUserAddressCreateView(generic.CreateView, AbstractAddressForm):
 
         if user_address:
             previous = {
-                'title': user_address.title, 
-                'first_name': user_address.first_name, 
-                'last_name': user_address.last_name,
-                'line1': user_address.line1, 
-                'line2': user_address.line2, 
-                'line3': user_address.line3, 
-                'line4': user_address.line4,
-                'state': user_address.state, 
-                'postcode': user_address.postcode, 
-                'country': user_address.country,
+                "title": user_address.title,
+                "first_name": user_address.first_name,
+                "last_name": user_address.last_name,
+                "line1": user_address.line1,
+                "line2": user_address.line2,
+                "line3": user_address.line3,
+                "line4": user_address.line4,
+                "state": user_address.state,
+                "postcode": user_address.postcode,
+                "country": user_address.country,
             }
         else:
             previous = {}

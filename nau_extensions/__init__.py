@@ -1,1 +1,1 @@
-default_app_config = 'nau_extensions.apps.NauExtensionsConfig'
+default_app_config = "nau_extensions.apps.NauExtensionsConfig"
