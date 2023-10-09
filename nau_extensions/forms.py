@@ -1,23 +1,41 @@
+from django import forms
+
 from oscar.core.loading import get_model
 from oscar.apps.address.forms import AbstractAddressForm
+from .models import BasketBillingInformation
 
-UserAddress = get_model('address', 'useraddress')
+Basket = get_model('basket', 'Basket')
 
-class UserAddressForm(AbstractAddressForm):
+class BasketBillingInformationAddressForm(AbstractAddressForm):
     """
-    A custom UserAddressForm without the fields 'phone_number' and 'notes'
-    and with a customization to define 'is_default_for_billing' during the initialization.
+    A custom Address Form without the fields 'phone_number' and 'notes'
     """
 
     class Meta:
-        model = UserAddress
+        model = BasketBillingInformation
         fields = [
             'title', 'first_name', 'last_name',
             'line1', 'line2', 'line3', 'line4',
             'state', 'postcode', 'country',
         ]
 
-    def __init__(self, user, is_default_for_billing, *args, **kwargs):
+    def __init__(self, basket, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.instance.user = user
-        self.instance.is_default_for_billing = is_default_for_billing
+        self.instance.basket = basket
+
+class BasketBillingInformationVATINForm(forms.ModelForm):
+    """
+    A form to save 'BasketBillingInformation' vatin information.
+    """
+    class Meta:
+        model = BasketBillingInformation
+        fields = [
+            'country',
+            'vatin'
+        ]
+
+    def __init__(self, basket, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.instance.basket = basket
+
+        self.fields['vatin'].required = True

@@ -14,6 +14,12 @@ edit the `ecommerce/settings/private.py` file add change to::
     from .production import INSTALLED_APPS
     INSTALLED_APPS += ("paygate", "nau_extensions", )
 
+Dvelopment
+=============
+
+To create migrations for this project the next command inside ecommerce container::
+    python manage.py makemigrations nau_extensions
+
 License
 =======
 

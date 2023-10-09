@@ -10,7 +10,7 @@ class NauExtensionsConfig(AppConfig):
     """
 
     name = "nau_extensions"
-    verbose_name = "Django Ecommerce plugin with NAU custom extensions app."
+    verbose_name = "NAU extensions app"
     plugin_app = {
         "url_config": {
             "ecommerce": {

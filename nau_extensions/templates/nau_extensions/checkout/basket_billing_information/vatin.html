@@ -6,7 +6,7 @@
 {% load static %}
 
 {% block title %}
-    {% trans "Billing address" as tmsg %}{{ tmsg | force_escape }}
+    {% trans "Billing information" as tmsg %}{{ tmsg | force_escape }}
 {% endblock title %}
 
 {% block navbar %}
@@ -18,7 +18,7 @@
     <div class="basket {% if enable_client_side_checkout %}basket-client-side{% endif %}">
         <div class="container">
             <div id="content-inner">
-                <h1>{% trans "Billing address" as tmsg %}{{ tmsg | force_escape }}</h1>
+                <h1>{% trans "VAT Identification Number (VATIN)" as tmsg %}{{ tmsg | force_escape }}</h1>
 
                 {# Fix missing required style #}
                 <style>
@@ -30,8 +30,9 @@
                 </style>
 
                 <div class="well">
-                    <form id="update_user_address" method="post" class="form form-horizontal">
+                    <form id="update_billing_information" method="post" class="form form-horizontal">
                         {% csrf_token %}
+                        <input type="hidden" name="basket_id" value="{{ basket.id }}" />
                         {% include "oscar/partials/form_fields.html" with form=form style='horizontal' %}
                         <div class="form-group">
                             <div class="col-sm-offset-4 col-sm-8">
