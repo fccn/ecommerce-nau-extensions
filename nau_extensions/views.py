@@ -1,6 +1,7 @@
 """
 Paygate payment processing views in these views the callback pages will be implemented
 """
+from abc import abstractmethod
 import logging
 
 from django.http import HttpResponseForbidden, HttpResponse
@@ -67,7 +68,7 @@ class BasketBillingInformationCreateUpdateView(generic.UpdateView):
         kwargs["basket"] = self.basket
         return kwargs
 
-    def get_initial(self, fields=[]):
+    def get_initial(self):
         """
         Load previous basket billing information from previous basket of same owner, load only
         some fields related to the form.
@@ -75,21 +76,64 @@ class BasketBillingInformationCreateUpdateView(generic.UpdateView):
         dict = super().get_initial()
         data = {}
 
+        def get_attrs(object, attrs=[]):
+            """
+            If the object has any attributes.
+            
+            Returns:
+                data (dict): the key - value of the attributes and its value.
+            """
+            data = {}
+            if object:
+                for attr in attrs:
+                    value = getattr(object, attr)
+                    if value:
+                        data[attr] = value
+            return data
+        
+        def _previous_bbi(basket):
+            """
+            Get the previous BasketBillingInformation for a previous basket of the requested user.
+            """
+            return (
+                BasketBillingInformation.objects.filter(basket__owner=basket.owner)
+                    .exclude(basket=basket)
+                    .select_related("basket")
+                    .order_by("-basket__id")
+                    .first()
+                )
+
+        bbi = None
         try:
-            BasketBillingInformation.objects.get(basket=self.basket)
+            bbi = BasketBillingInformation.objects.get(basket=self.basket)
         except BasketBillingInformation.DoesNotExist:
-            prev_basket_bbi = (
-                BasketBillingInformation.objects.filter(basket__owner=self.request.user)
-                .select_related("basket")
-                .order_by("-basket__id")
-                .first()
-            )
-            if prev_basket_bbi:
-                for field in fields:
-                    data[field] = getattr(prev_basket_bbi, field)
+            pass
+        
+        data = get_attrs(bbi, self.get_fields_decide_which_bbi_to_use())
+        if len(data) == 0:
+            bbi = _previous_bbi(self.basket)
+
+        if bbi:
+            data = get_attrs(bbi, self.get_initial_fields())
 
         return {**dict, **data}
 
+    @abstractmethod
+    def get_initial_fields(self):
+        """
+        The fields that are going to be used on the `get_initial` method, used to pre-populate the
+        form.
+        """
+        pass
+    
+    def get_fields_decide_which_bbi_to_use(self):
+        """
+        The fields that we use do decide witch BasketBillingInformation should we use.
+        We need this, because the country field is shared between Address and VATIN.
+        """
+        fields = self.get_initial_fields()
+        fields.remove('country')
+        return fields
 
 class BasketBillingInformationAddressCreateUpdateView(
     BasketBillingInformationCreateUpdateView, AbstractAddressForm
@@ -105,9 +149,11 @@ class BasketBillingInformationAddressCreateUpdateView(
         messages.info(self.request, _("Address saved"))
         return super().get_success_url()
 
-    def get_initial(self):
-        return super().get_initial(
-            fields=[
+    def get_initial_fields(self):
+        """
+        The fields from the address that are going to prepopulate the form.
+        """
+        return [
                 "title",
                 "first_name",
                 "last_name",
@@ -119,7 +165,6 @@ class BasketBillingInformationAddressCreateUpdateView(
                 "postcode",
                 "country",
             ]
-        )
 
 
 class BasketBillingInformationVATINCreateUpdateView(
@@ -132,8 +177,11 @@ class BasketBillingInformationVATINCreateUpdateView(
     template_name = "nau_extensions/checkout/basket_billing_information/vatin.html"
     form_class = BasketBillingInformationVATINForm
 
-    def get_initial(self):
-        return super().get_initial(fields=["country", "vatin"])
+    def get_initial_fields(self):
+        """
+        The fields that are going to prepopulate the form.
+        """
+        return ["country", "vatin"]
 
     def get_success_url(self):
         messages.info(self.request, _("VATIN saved"))
