@@ -34,7 +34,7 @@ test: | _prerequire ## Run all the tests, to run a specific test run: make test 
 	arg_2="$${args:-${1}}" && \
 	arg_3="$${arg_2:=$(SRC_FOLDER_FULL_PATH)}" && \
 	cd ${ECOMMERCE_SOURCE_PATH} && \
-	DJANGO_SETTINGS_MODULE=paygate.settings.test coverage run --source="$(ROOT_DIR)" -m pytest $${arg_3}
+	DJANGO_SETTINGS_MODULE=nau_extensions.settings.test coverage run --source="$(ROOT_DIR)" -m pytest $${arg_3}
 .PHONY: test
 
 clean: ## remove all the unneeded artifacts
