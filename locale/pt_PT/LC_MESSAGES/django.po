@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-07 14:48+0000\n"
+"POT-Creation-Date: 2023-11-07 14:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 #: nau_extensions/models.py:37
 #: nau_extensions/templates/nau_extensions/checkout/basket_billing_information/vatin.html:21
 msgid "VAT Identification Number (VATIN)"
-msgstr ""
+msgstr "Número de Identificação Fiscal (NIF)"
 
 #: nau_extensions/models.py:41
 msgid ""
