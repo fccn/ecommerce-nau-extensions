@@ -21,6 +21,6 @@ class NauExtensionsConfig(AppConfig):
 
     def ready(self):
         print("Nau extensions loading...")
-        
+
         # Register signals
-        import nau_extensions.signals
+        import nau_extensions.signals  # pylint: disable=import-outside-toplevel,unused-import

@@ -1,6 +1,7 @@
 from django.conf.urls import url
 
-from .views import *
+from .views import (BasketBillingInformationAddressCreateUpdateView,
+                    BasketBillingInformationVATINCreateUpdateView)
 
 app_name = "ecommerce_nau_extensions"
 
@@ -16,5 +17,4 @@ urlpatterns = [
         BasketBillingInformationVATINCreateUpdateView.as_view(),
         name="nau-basket-billing-information-vatin",
     ),
-    
 ]

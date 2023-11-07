@@ -1,17 +1,15 @@
 from django.db import models
 from django.forms import ValidationError
 from django.utils.translation import ugettext_lazy as _
-from .vatin import check_country_vatin
-from django.db import models
 from jsonfield import JSONField
+from oscar.apps.address.abstract_models import AbstractAddress
+from oscar.core.loading import get_class, get_model
 
-from oscar.core.loading import get_model, get_class
+from .vatin import check_country_vatin
 
 Basket = get_model("basket", "Basket")
 Country = get_model("address", "Country")
 Selector = get_class('partner.strategy', 'Selector')
-
-from oscar.apps.address.abstract_models import AbstractAddress
 
 
 class BasketBillingInformation(AbstractAddress):
@@ -64,7 +62,7 @@ class BasketBillingInformation(AbstractAddress):
         # to check postcode
         if self.postcode:
             super().clean()
-        
+
         errors = {}
         if self.vatin:
             if not check_country_vatin(self.country.iso_3166_1_a2, self.vatin):
@@ -119,7 +117,7 @@ class BasketTransactionIntegration(models.Model):
 
     class Meta:
         get_latest_by = 'created'
-    
+
     @staticmethod
     def create(basket):
         """
@@ -166,7 +164,7 @@ class BasketTransactionIntegration(models.Model):
     def send_to_financial_manager(self):
         # initialize strategy
         self.basket.strategy = Selector().strategy(user=self.basket.owner)
-        
+
         self.request = self._get_request_data()
         self.save()
 

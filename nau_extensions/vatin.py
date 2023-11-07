@@ -31,16 +31,19 @@ VATIN_CONFIG = r"""\b(
 )\b"""
 VATIN_REGEX = re.compile(VATIN_CONFIG, flags=re.I | re.VERBOSE,)
 
-def check_country_vatin(country_iso_3166_1_a2 : str, vatin : str) -> bool:
+
+def check_country_vatin(country_iso_3166_1_a2: str, vatin: str) -> bool:
+    """
+    Verify the value of the VATIN is correct for the country.
+    """
     if country_iso_3166_1_a2 not in VATIN_CONFIG:
         # not a country that we have on regex's
         return True
-    
+
     is_regex_valid = VATIN_REGEX.match((country_iso_3166_1_a2 + vatin)) is not None
-    
+
     if country_iso_3166_1_a2 == 'PT':
-        from .nif import controlNIF
+        from .nif import controlNIF  # pylint: disable=import-outside-toplevel
         return controlNIF(vatin)
-    
+
     return is_regex_valid
-    

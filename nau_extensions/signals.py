@@ -1,6 +1,6 @@
 from django.dispatch import receiver
 from oscar.core.loading import get_class
-from ecommerce.extensions.analytics.utils import silence_exceptions
+
 from .models import BasketTransactionIntegration
 from .tasks import send_basket_transaction_integration_to_financial_manager
 

@@ -7,7 +7,8 @@ import string
 
 LEN_NIF = 9
 
-def _toIntList(numstr, acceptX=0):
+
+def _toIntList(numstr):
     """
     Converte string passada para lista de inteiros,
     eliminando todos os caracteres inválidos.
@@ -22,6 +23,7 @@ def _toIntList(numstr, acceptX=0):
         if i in string.digits:
             res.append(int(i))
     return res
+
 
 def controlNIF(nif):
     """
@@ -40,6 +42,7 @@ def controlNIF(nif):
     # verificar validade
     return _valN(nif)
 
+
 def _valN(num):
     """
     Algoritmo para verificar validade de NBI e NIF.
@@ -50,9 +53,9 @@ def _valN(num):
     num = _toIntList(num)
 
     # computar soma de controlo
-    sum = 0
+    _sum = 0
     for pos, dig in enumerate(num[:-1]):
-        sum += dig * (9 - pos)
+        _sum += dig * (9 - pos)
 
     # verificar soma de controlo
-    return (sum % 11 and (11 - sum % 11) % 10) == num[-1]
+    return (_sum % 11 and (11 - _sum % 11) % 10) == num[-1]

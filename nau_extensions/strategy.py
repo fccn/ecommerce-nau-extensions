@@ -5,9 +5,10 @@ Use a fixed rate tax read from a setting.
 from decimal import Decimal as D
 
 from django.conf import settings
+from oscar.apps.partner import strategy
+
 from ecommerce.extensions.partner.strategy import \
     CourseSeatAvailabilityPolicyMixin
-from oscar.apps.partner import strategy
 
 
 class DefaultStrategy(

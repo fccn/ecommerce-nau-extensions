@@ -1,20 +1,18 @@
 """
-Paygate payment processing views in these views the callback pages will be implemented
+Basket billing information views.
 """
-from abc import abstractmethod
 import logging
+from abc import abstractmethod
 
-from django.http import HttpResponseForbidden, HttpResponse
 from django import shortcuts
 from django.contrib import messages
+from django.http import HttpResponse, HttpResponseForbidden
 from django.utils.translation import ugettext_lazy as _
 from django.views import generic
 from oscar.core.loading import get_class, get_model
 
-from .forms import (
-    BasketBillingInformationAddressForm,
-    BasketBillingInformationVATINForm,
-)
+from .forms import (BasketBillingInformationAddressForm,
+                    BasketBillingInformationVATINForm)
 from .models import BasketBillingInformation
 
 logger = logging.getLogger(__name__)
@@ -26,11 +24,14 @@ AbstractAddressForm = get_class("address.forms", "AbstractAddressForm")
 
 
 class BasketBillingInformationCreateUpdateView(generic.UpdateView):
+    """
+    The merged create and update view for the `BasketBillingInformation`.
+    """
     success_url = "/basket/"
 
     def get_object(self, queryset=None):
         try:
-            bbi, created = BasketBillingInformation.objects.get_or_create(
+            bbi, created = BasketBillingInformation.objects.get_or_create(  # pylint: disable=unused-variable
                 basket=self.basket
             )
         except AttributeError:
@@ -38,7 +39,7 @@ class BasketBillingInformationCreateUpdateView(generic.UpdateView):
         return bbi
 
     def get(self, request, *args, **kwargs):
-        self.basket = shortcuts.get_object_or_404(
+        self.basket = shortcuts.get_object_or_404(  # pylint: disable=attribute-defined-outside-init
             Basket, pk=request.GET.get("basket_id")
         )
         if self.basket.owner != request.user:
@@ -51,7 +52,7 @@ class BasketBillingInformationCreateUpdateView(generic.UpdateView):
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        self.basket = shortcuts.get_object_or_404(
+        self.basket = shortcuts.get_object_or_404(  # pylint: disable=attribute-defined-outside-init
             Basket, pk=request.POST.get("basket_id")
         )
         if self.basket.owner != request.user:
@@ -73,42 +74,42 @@ class BasketBillingInformationCreateUpdateView(generic.UpdateView):
         Load previous basket billing information from previous basket of same owner, load only
         some fields related to the form.
         """
-        dict = super().get_initial()
+        _dict = super().get_initial()
         data = {}
 
-        def get_attrs(object, attrs=[]):
+        def get_attrs(_object, attrs=[]):  # pylint: disable=dangerous-default-value
             """
             If the object has any attributes.
-            
+
             Returns:
                 data (dict): the key - value of the attributes and its value.
             """
             data = {}
-            if object:
+            if _object:
                 for attr in attrs:
-                    value = getattr(object, attr)
+                    value = getattr(_object, attr)
                     if value:
                         data[attr] = value
             return data
-        
+
         def _previous_bbi(basket):
             """
             Get the previous BasketBillingInformation for a previous basket of the requested user.
             """
             return (
                 BasketBillingInformation.objects.filter(basket__owner=basket.owner)
-                    .exclude(basket=basket)
-                    .select_related("basket")
-                    .order_by("-basket__id")
-                    .first()
-                )
+                .exclude(basket=basket)
+                .select_related("basket")
+                .order_by("-basket__id")
+                .first()
+            )
 
         bbi = None
         try:
             bbi = BasketBillingInformation.objects.get(basket=self.basket)
         except BasketBillingInformation.DoesNotExist:
             pass
-        
+
         data = get_attrs(bbi, self.get_fields_decide_which_bbi_to_use())
         if len(data) == 0:
             bbi = _previous_bbi(self.basket)
@@ -116,7 +117,7 @@ class BasketBillingInformationCreateUpdateView(generic.UpdateView):
         if bbi:
             data = get_attrs(bbi, self.get_initial_fields())
 
-        return {**dict, **data}
+        return {**_dict, **data}
 
     @abstractmethod
     def get_initial_fields(self):
@@ -124,16 +125,17 @@ class BasketBillingInformationCreateUpdateView(generic.UpdateView):
         The fields that are going to be used on the `get_initial` method, used to pre-populate the
         form.
         """
-        pass
-    
+        pass  # pylint: disable=unnecessary-pass
+
     def get_fields_decide_which_bbi_to_use(self):
         """
         The fields that we use do decide witch BasketBillingInformation should we use.
         We need this, because the country field is shared between Address and VATIN.
         """
         fields = self.get_initial_fields()
-        fields.remove('country')
+        fields.remove("country")
         return fields
+
 
 class BasketBillingInformationAddressCreateUpdateView(
     BasketBillingInformationCreateUpdateView, AbstractAddressForm
@@ -154,17 +156,17 @@ class BasketBillingInformationAddressCreateUpdateView(
         The fields from the address that are going to prepopulate the form.
         """
         return [
-                "title",
-                "first_name",
-                "last_name",
-                "line1",
-                "line2",
-                "line3",
-                "line4",
-                "state",
-                "postcode",
-                "country",
-            ]
+            "title",
+            "first_name",
+            "last_name",
+            "line1",
+            "line2",
+            "line3",
+            "line4",
+            "state",
+            "postcode",
+            "country",
+        ]
 
 
 class BasketBillingInformationVATINCreateUpdateView(
