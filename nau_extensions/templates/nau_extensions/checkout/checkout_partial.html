@@ -9,7 +9,7 @@
 
     {% block basket_billing_informations %}
     <div class="col-md-5 col-sm-12 basket-billing-information-vatin">
-        <p>{% trans "VATIN" as tmsg %}{{ tmsg | force_escape }}</p>
+        <p>{% trans "Value-Added Tax Identification Number (VATIN)" as tmsg %}{{ tmsg | force_escape }}</p>
         
         <a href="/payment/nau_extensions/basket-billing-information/vatin/?basket_id={{ basket.id }}">{% trans "Edit" as tmsg %}{{ tmsg | force_escape }}</a>
     

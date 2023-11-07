@@ -13,6 +13,7 @@ ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 ECOMMERCE_SOURCE_PATH ?= /edx/app/ecommerce/ecommerce
 SRC_FOLDER_RELATIVE_PATH ?= nau_extensions
 SRC_FOLDER_FULL_PATH=$(ROOT_DIR)/$(SRC_FOLDER_RELATIVE_PATH)
+LOCALES=--locale en --locale pt_PT
 
 # ==============================================================================
 # RULES
@@ -46,28 +47,43 @@ clean: ## remove all the unneeded artifacts
 .PHONY: clean
 
 # It will use the `.isort.cfg` from ecommerce
-lint-isort: _prerequire
+lint_isort: _prerequire
 	@cd ${ECOMMERCE_SOURCE_PATH} && \
 	isort --check-only --diff $(SRC_FOLDER_FULL_PATH)
 .PHONY: lint-isort
 
 # It will use the `.isort.cfg` from ecommerce
-run-isort: _prerequire
+run_isort: _prerequire  ## Run the isort to sort the python imports
 	@cd ${ECOMMERCE_SOURCE_PATH} && \
 	isort $(SRC_FOLDER_FULL_PATH)
 .PHONY: run_isort
 
 # It will use the `setup.cfg` from ecommerce
-lint-pycodestyle: _prerequire
+lint_pycodestyle: _prerequire
 	@cd ${ECOMMERCE_SOURCE_PATH} && \
 	pycodestyle --config=setup.cfg $(SRC_FOLDER_FULL_PATH)
 .PHONY: lint-pycodestyle
 
 # It will use the `pylintrc` from ecommerce
-lint-pylint: _prerequire
+lint_pylint: _prerequire
 	@cd ${ECOMMERCE_SOURCE_PATH} && \
 	pylint -j 0 --rcfile=pylintrc --verbose --init-hook='import sys; sys.path.append("${ECOMMERCE_SOURCE_PATH}")' $(SRC_FOLDER_FULL_PATH)
 .PHONY: lint-pylint
 
-lint: | lint-isort lint-pycodestyle lint-pylint ## Run Python linting
+lint: | lint_isort lint_pycodestyle lint_pylint ## Run Python linting
 .PHONY: lint
+
+extract_translations:  ## Extract translations from source code
+	@python ${ECOMMERCE_SOURCE_PATH}/manage.py makemessages $(LOCALES) -d django
+.PHONY: extract-translations
+
+compile_translations:  ## Compiles the extracted transactions
+	@python ${ECOMMERCE_SOURCE_PATH}/manage.py compilemessages
+.PHONY: compile_translations
+
+detect_changed_source_translations:
+	@test $$(git diff --exit-code -G "^(msgid|msgstr)" | wc -l) -eq 0 || ( echo "Detected a changed source transactions!" ; exit 1 )
+.PHONY: detect_changed_source_translations
+
+transactions: | extract_translations compile_translations ## Extract and compile translations
+.PHONY: transactions

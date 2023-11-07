@@ -1,0 +1,109 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-11-07 14:48+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: nau_extensions/models.py:37
+#: nau_extensions/templates/nau_extensions/checkout/basket_billing_information/vatin.html:21
+msgid "VAT Identification Number (VATIN)"
+msgstr ""
+
+#: nau_extensions/models.py:41
+msgid ""
+"The value-added tax identification number or VAT identification number can "
+"be used to identify a business or a taxable person in the European Union."
+msgstr ""
+
+#: nau_extensions/models.py:48
+msgid "Basket Billing Information"
+msgstr ""
+
+#: nau_extensions/models.py:49
+msgid "Basket Billing Informations"
+msgstr ""
+
+#: nau_extensions/models.py:69
+msgid "Incorrect vatin format for country"
+msgstr ""
+
+#: nau_extensions/models.py:92
+msgid "To be sent"
+msgstr ""
+
+#: nau_extensions/models.py:93
+msgid "Sent with success"
+msgstr ""
+
+#: nau_extensions/models.py:94
+msgid "Sent with error"
+msgstr ""
+
+#: nau_extensions/templates/nau_extensions/checkout/basket_billing_information/address.html:9
+#: nau_extensions/templates/nau_extensions/checkout/basket_billing_information/address.html:21
+#: nau_extensions/templates/nau_extensions/checkout/checkout_partial.html:32
+msgid "Billing address"
+msgstr ""
+
+#: nau_extensions/templates/nau_extensions/checkout/basket_billing_information/address.html:39
+#: nau_extensions/templates/nau_extensions/checkout/basket_billing_information/vatin.html:39
+msgid "Saving..."
+msgstr ""
+
+#: nau_extensions/templates/nau_extensions/checkout/basket_billing_information/address.html:39
+#: nau_extensions/templates/nau_extensions/checkout/basket_billing_information/vatin.html:39
+msgid "Save"
+msgstr ""
+
+#: nau_extensions/templates/nau_extensions/checkout/basket_billing_information/address.html:40
+#: nau_extensions/templates/nau_extensions/checkout/basket_billing_information/vatin.html:40
+msgid "or"
+msgstr ""
+
+#: nau_extensions/templates/nau_extensions/checkout/basket_billing_information/address.html:40
+#: nau_extensions/templates/nau_extensions/checkout/basket_billing_information/vatin.html:40
+msgid "cancel"
+msgstr ""
+
+#: nau_extensions/templates/nau_extensions/checkout/basket_billing_information/vatin.html:9
+msgid "Billing information"
+msgstr ""
+
+#: nau_extensions/templates/nau_extensions/checkout/checkout_partial.html:12
+msgid "Value-Added Tax Identification Number (VATIN)"
+msgstr ""
+
+#: nau_extensions/templates/nau_extensions/checkout/checkout_partial.html:14
+#: nau_extensions/templates/nau_extensions/checkout/checkout_partial.html:34
+msgid "Edit"
+msgstr ""
+
+#: nau_extensions/templates/nau_extensions/checkout/checkout_partial.html:20
+msgid "Country"
+msgstr ""
+
+#: nau_extensions/templates/nau_extensions/checkout/checkout_partial.html:22
+msgid "VATIN"
+msgstr ""
+
+#: nau_extensions/views.py:151
+msgid "Address saved"
+msgstr ""
+
+#: nau_extensions/views.py:189
+msgid "VATIN saved"
+msgstr ""
