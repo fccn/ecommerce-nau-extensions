@@ -77,13 +77,13 @@ extract_translations:  ## Extract translations from source code
 	@python ${ECOMMERCE_SOURCE_PATH}/manage.py makemessages $(LOCALES) -d django
 .PHONY: extract-translations
 
-compile_translations:  ## Compiles the extracted transactions
+compile_translations:  ## Compiles the extracted translations
 	@python ${ECOMMERCE_SOURCE_PATH}/manage.py compilemessages
 .PHONY: compile_translations
 
 detect_changed_source_translations:
-	@test $$(git diff --exit-code -G "^(msgid|msgstr)" | wc -l) -eq 0 || ( echo "Detected a changed source transactions!" ; exit 1 )
+	@test $$(git diff --exit-code -G "^(msgid|msgstr)" | wc -l) -eq 0 || ( echo "Detected a changed source translations!" ; exit 1 )
 .PHONY: detect_changed_source_translations
 
-transactions: | extract_translations compile_translations ## Extract and compile translations
-.PHONY: transactions
+translations: | extract_translations compile_translations ## Extract and compile translations
+.PHONY: translations
