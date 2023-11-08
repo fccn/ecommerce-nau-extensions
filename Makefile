@@ -74,11 +74,11 @@ lint: | lint_isort lint_pycodestyle lint_pylint ## Run Python linting
 .PHONY: lint
 
 extract_translations:  ## Extract translations from source code
-	@python ${ECOMMERCE_SOURCE_PATH}/manage.py makemessages $(LOCALES) -d django
+	@DJANGO_SETTINGS_MODULE="" django-admin makemessages $(LOCALES) -d django
 .PHONY: extract_translations
 
 compile_translations:  ## Compiles the extracted translations
-	@python ${ECOMMERCE_SOURCE_PATH}/manage.py compilemessages
+	@DJANGO_SETTINGS_MODULE="" django-admin compilemessages
 .PHONY: compile_translations
 
 detect_changed_source_translations:
