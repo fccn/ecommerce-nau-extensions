@@ -47,5 +47,8 @@ jobs:
       - name: Run lint
         run: ECOMMERCE_SOURCE_PATH=../ecommerce make -C ecommerce-nau-extensions lint
 
+      - name: Install gettext package
+        run: sudo apt-get install -y gettext
+
       - name: Extract translations and detect changed source translations
         run: make -C ecommerce-nau-extensions extract_translations detect_changed_source_translations
