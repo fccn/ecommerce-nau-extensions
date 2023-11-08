@@ -50,7 +50,7 @@ clean: ## remove all the unneeded artifacts
 lint_isort: _prerequire
 	@cd ${ECOMMERCE_SOURCE_PATH} && \
 	isort --check-only --diff $(SRC_FOLDER_FULL_PATH)
-.PHONY: lint-isort
+.PHONY: lint_isort
 
 # It will use the `.isort.cfg` from ecommerce
 run_isort: _prerequire  ## Run the isort to sort the python imports
@@ -62,20 +62,20 @@ run_isort: _prerequire  ## Run the isort to sort the python imports
 lint_pycodestyle: _prerequire
 	@cd ${ECOMMERCE_SOURCE_PATH} && \
 	pycodestyle --config=setup.cfg $(SRC_FOLDER_FULL_PATH)
-.PHONY: lint-pycodestyle
+.PHONY: lint_pycodestyle
 
 # It will use the `pylintrc` from ecommerce
 lint_pylint: _prerequire
 	@cd ${ECOMMERCE_SOURCE_PATH} && \
 	pylint -j 0 --rcfile=pylintrc --verbose --init-hook='import sys; sys.path.append("${ECOMMERCE_SOURCE_PATH}")' $(SRC_FOLDER_FULL_PATH)
-.PHONY: lint-pylint
+.PHONY: lint_pylint
 
 lint: | lint_isort lint_pycodestyle lint_pylint ## Run Python linting
 .PHONY: lint
 
 extract_translations:  ## Extract translations from source code
 	@python ${ECOMMERCE_SOURCE_PATH}/manage.py makemessages $(LOCALES) -d django
-.PHONY: extract-translations
+.PHONY: extract_translations
 
 compile_translations:  ## Compiles the extracted translations
 	@python ${ECOMMERCE_SOURCE_PATH}/manage.py compilemessages
