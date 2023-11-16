@@ -28,6 +28,12 @@ edit the `ecommerce/settings/private.py` file add change to::
     # Configure tax as 23% used in Portugal
     NAU_EXTENSION_TAX_RATE = "0.298701299" # = 0.23/0.77
 
+    NAU_FINANCIAL_MANAGER = {
+        "edx": {
+            "url": "http://financial-manager.local.nau.fccn.pt:8000/api/billing/transaction-complete/",
+            "token": "abcdABCD1234",
+        }
+    }
 
 Development
 =============
