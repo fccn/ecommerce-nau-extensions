@@ -2,7 +2,7 @@ from django import forms
 from oscar.apps.address.forms import AbstractAddressForm
 from oscar.core.loading import get_model
 
-from nau_extensions.models import BasketBillingInformation
+from .models import BasketBillingInformation
 
 Basket = get_model("basket", "Basket")
 

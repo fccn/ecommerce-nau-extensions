@@ -43,7 +43,7 @@ def check_country_vatin(country_iso_3166_1_a2: str, vatin: str) -> bool:
     is_regex_valid = VATIN_REGEX.match((country_iso_3166_1_a2 + vatin)) is not None
 
     if country_iso_3166_1_a2 == 'PT':
-        from nau_extensions.nif import controlNIF  # pylint: disable=import-outside-toplevel
+        from .nif import controlNIF  # pylint: disable=import-outside-toplevel
         return controlNIF(vatin)
 
     return is_regex_valid

@@ -3,7 +3,7 @@ from pprint import pformat
 from django.contrib import admin
 from django.utils.html import format_html
 
-from nau_extensions.models import BasketBillingInformation, BasketTransactionIntegration
+from .models import BasketBillingInformation, BasketTransactionIntegration
 
 admin.site.register(BasketBillingInformation)
 

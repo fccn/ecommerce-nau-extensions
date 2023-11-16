@@ -9,20 +9,21 @@ from django.core.exceptions import ImproperlyConfigured
 from opaque_keys.edx.keys import CourseKey
 from oscar.core.loading import get_class, get_model
 
-from nau_extensions.models import BasketTransactionIntegration
+from .models import BasketTransactionIntegration
+from .utils import get_order
 
 logger = logging.getLogger(__name__)
 Selector = get_class("partner.strategy", "Selector")
-Order = get_model('order', 'Order')
+Order = get_model("order", "Order")
+
 
 def is_financial_manager_enabled(site) -> bool:
     """
     Check if there is a valid `NAU_FINANCIAL_MANAGER` setting for the `site`.
     """
     partner_short_code = site.siteconfiguration.partner.short_code
-    enabled = (
-        hasattr(settings, "NAU_FINANCIAL_MANAGER")
-        and partner_short_code.lower() in settings.NAU_FINANCIAL_MANAGER
+    enabled = hasattr(settings, "NAU_FINANCIAL_MANAGER") and (
+        partner_short_code.lower() in settings.NAU_FINANCIAL_MANAGER
     )
     if not enabled:
         logger.info(
@@ -34,14 +35,11 @@ def is_financial_manager_enabled(site) -> bool:
 
 def _get_financial_manager_setting(site, key, default=None):
     partner_short_code = site.siteconfiguration.partner.short_code
-    if key in settings.NAU_FINANCIAL_MANAGER[partner_short_code.lower()]:
-        return settings.NAU_FINANCIAL_MANAGER[partner_short_code.lower()][key]
-    elif default:
-        return default
-    else:
+    if not default and key not in settings.NAU_FINANCIAL_MANAGER[partner_short_code.lower()]:
         msg = f"Missing setting `NAU_FINANCIAL_MANAGER['{partner_short_code.lower()}']['{key}']`"
         logger.warning(msg)
         raise ImproperlyConfigured(msg)
+    return settings.NAU_FINANCIAL_MANAGER[partner_short_code.lower()].get(key, default)
 
 
 def sync_request_data(bti: BasketTransactionIntegration) -> dict:
@@ -57,7 +55,7 @@ def sync_request_data(bti: BasketTransactionIntegration) -> dict:
     address_line_2 = bbi.line2 + (
         ("," + bbi.line3) if bbi.line3 and len(bbi.line3) > 0 else ""
     )
-    order = Order.objects.filter(basket=basket).first()
+    order = get_order(basket)
 
     # generate a dict with all request data
     request_data = {
@@ -104,6 +102,7 @@ def _convert_order_lines(order):
     for line in order.lines.all():
         # line.discount_incl_tax
         # line.discount_excl_tax
+        course_run_key = CourseKey.from_string(line.product.course.id)
         result.append(
             {
                 "description": line.title,
@@ -111,8 +110,9 @@ def _convert_order_lines(order):
                 "vat_tax": 1 - (line.unit_price_excl_tax - line.unit_price_incl_tax),
                 "amount_exclude_vat": line.quantity * line.unit_price_excl_tax,
                 "amount_include_vat": line.quantity * line.unit_price_incl_tax,
-                "organization_code": CourseKey.from_string(line.product.course.id).org,
-                "product_code": line.product.course.id,
+                "organization_code": course_run_key.org,
+                "product_code": course_run_key.course,
+                "product_id": line.product.course.id,
             }
         )
     return result
@@ -136,7 +136,7 @@ def send_to_financial_manager_if_enabled(
             headers={"Authorization": token},
             timeout=30,
         )
-        
+
         # update state
         if basket_transaction_integration.status_code == 200:
             state = BasketTransactionIntegration.SENT_WITH_SUCCESS
@@ -146,5 +146,5 @@ def send_to_financial_manager_if_enabled(
 
         # save the response output
         basket_transaction_integration.response = response.content
-        
+
         basket_transaction_integration.save()
