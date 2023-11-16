@@ -3,13 +3,12 @@ from django.forms import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from jsonfield import JSONField
 from oscar.apps.address.abstract_models import AbstractAddress
-from oscar.core.loading import get_class, get_model
+from oscar.core.loading import get_model
 
-from .vatin import check_country_vatin
+from nau_extensions.vatin import check_country_vatin
 
 Basket = get_model("basket", "Basket")
 Country = get_model("address", "Country")
-Selector = get_class('partner.strategy', 'Selector')
 
 
 class BasketBillingInformation(AbstractAddress):
@@ -110,13 +109,14 @@ class BasketTransactionIntegration(models.Model):
     # the request information that will be send to the nau-financial-manager
     request = JSONField()
 
-    # the reponse that we receive from the nau-financial-manager
+    # the response that we receive from the nau-financial-manager
     response = JSONField()
 
     created = models.DateTimeField(auto_now_add=True, db_index=True)
+    modified = models.DateTimeField(auto_now=True)
 
     class Meta:
-        get_latest_by = 'created'
+        get_latest_by = "created"
 
     @staticmethod
     def create(basket):
@@ -124,50 +124,3 @@ class BasketTransactionIntegration(models.Model):
         Create a new basket transaction integration for a basket.
         """
         return BasketTransactionIntegration(basket=basket)
-
-    def _get_request_data(self) -> dict:
-        transaction_id = self.basket.order_number
-        client_name = self.basket.owner.full_name
-        email = self.basket.owner.email
-        address_line_1 = self.basket.basket_billing_information.line1
-        address_line_2 = self.basket.basket_billing_information.line2
-        if self.basket.basket_billing_information.line3 and len(self.basket.basket_billing_information.line3) > 0:
-            address_line_2 += ", "
-            address_line_2 += self.basket.basket_billing_information.line3
-        city = self.basket.basket_billing_information.line4
-        postal_code = self.basket.basket_billing_information.postcode
-        state = self.basket.basket_billing_information.state
-        country_code = self.basket.basket_billing_information.country.iso_3166_1_a2
-        vat_identification_number = self.basket.basket_billing_information.vatin
-        vat_identification_country = self.basket.basket_billing_information.country.iso_3166_1_a2
-        total_amount_exclude_vat = self.basket.total_excl_tax
-        total_amount_include_vat = self.basket.total_incl_tax
-        currency = self.basket.currency
-
-        return {
-            "transaction_id": transaction_id,
-            "client_name": client_name,
-            "email": email,
-            "address_line_1": address_line_1,
-            "address_line_2": address_line_2,
-            "city": city,
-            "postal_code": postal_code,
-            "state": state,
-            "country_code": country_code,
-            "vat_identification_number": vat_identification_number,
-            "vat_identification_country": vat_identification_country,
-            "total_amount_exclude_vat": total_amount_exclude_vat,
-            "total_amount_include_vat": total_amount_include_vat,
-            "currency": currency,
-        }
-
-    def send_to_financial_manager(self):
-        # initialize strategy
-        self.basket.strategy = Selector().strategy(user=self.basket.owner)
-
-        self.request = self._get_request_data()
-        self.save()
-
-        # requests ...
-
-        # self.response = response_data

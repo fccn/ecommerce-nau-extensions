@@ -1,8 +1,8 @@
 from django.dispatch import receiver
 from oscar.core.loading import get_class
 
-from .models import BasketTransactionIntegration
-from .tasks import send_basket_transaction_integration_to_financial_manager
+from nau_extensions.models import BasketTransactionIntegration
+from nau_extensions.tasks import send_basket_transaction_integration_to_financial_manager
 
 post_checkout = get_class("checkout.signals", "post_checkout")
 

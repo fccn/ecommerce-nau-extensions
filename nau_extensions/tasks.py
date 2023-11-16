@@ -1,5 +1,7 @@
 from celery import shared_task
 
+from nau_extensions.financial_manager import send_to_financial_manager_if_enabled
+
 
 @shared_task(bind=True, ignore_result=True)
 def send_basket_transaction_integration_to_financial_manager(self, basket):  # pylint: disable=unused-argument
@@ -10,4 +12,4 @@ def send_basket_transaction_integration_to_financial_manager(self, basket):  # p
         self: Ignore
         basket (Basket): the basket to send
     """
-    basket.basket_transaction_integration.send_to_financial_manager()
+    send_to_financial_manager_if_enabled(basket.basket_transaction_integration)

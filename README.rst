@@ -35,6 +35,9 @@ Development
 To create migrations for this project the next command inside ecommerce container::
     python manage.py makemigrations nau_extensions
 
+Then run the migrations::
+    python manage.py migrate
+
 License
 =======
 

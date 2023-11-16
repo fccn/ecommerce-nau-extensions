@@ -11,9 +11,9 @@ from django.utils.translation import ugettext_lazy as _
 from django.views import generic
 from oscar.core.loading import get_class, get_model
 
-from .forms import (BasketBillingInformationAddressForm,
+from nau_extensions.forms import (BasketBillingInformationAddressForm,
                     BasketBillingInformationVATINForm)
-from .models import BasketBillingInformation
+from nau_extensions.models import BasketBillingInformation
 
 logger = logging.getLogger(__name__)
 

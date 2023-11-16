@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from .views import (BasketBillingInformationAddressCreateUpdateView,
+from nau_extensions.views import (BasketBillingInformationAddressCreateUpdateView,
                     BasketBillingInformationVATINCreateUpdateView)
 
 app_name = "ecommerce_nau_extensions"
