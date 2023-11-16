@@ -5,7 +5,8 @@ from jsonfield import JSONField
 from oscar.apps.address.abstract_models import AbstractAddress
 from oscar.core.loading import get_model
 
-from nau_extensions.vatin import check_country_vatin
+from .utils import get_order
+from .vatin import check_country_vatin
 
 Basket = get_model("basket", "Basket")
 Country = get_model("address", "Country")
@@ -84,6 +85,7 @@ class BasketTransactionIntegration(models.Model):
     Model to save the information for each transaction that we receive money and that we need to
     issue a new receipt using the NAU-Financial-Manager service.
     """
+
     TO_BE_SENT = "To be sent"
     SENT_WITH_SUCCESS = "Sent with success"
     SENT_WITH_ERROR = "Sent with error"
@@ -123,4 +125,10 @@ class BasketTransactionIntegration(models.Model):
         """
         Create a new basket transaction integration for a basket.
         """
+        order = get_order(basket)
+        if not order:
+            raise ValueError(
+                f"The creation of BasketTransactionIntegration requires a basket with an order"
+                f", basket '{basket}'"
+            )
         return BasketTransactionIntegration(basket=basket)
