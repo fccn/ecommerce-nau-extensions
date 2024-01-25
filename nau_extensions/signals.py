@@ -1,8 +1,9 @@
+from django.db import transaction
 from django.dispatch import receiver
+from nau_extensions.financial_manager import \
+    send_to_financial_manager_if_enabled
+from nau_extensions.models import BasketTransactionIntegration
 from oscar.core.loading import get_class
-
-from .models import BasketTransactionIntegration
-from .tasks import send_basket_transaction_integration_to_financial_manager
 
 post_checkout = get_class("checkout.signals", "post_checkout")
 
@@ -19,5 +20,7 @@ def create_and_send_basket_transaction_integration_to_financial_manager(
     Create a Basket Transaction Integration object after a checkout of an Order;
     then send that information to the nau-financial-manager service.
     """
-    BasketTransactionIntegration.create(order.basket).save()
-    send_basket_transaction_integration_to_financial_manager.delay(order.basket)
+    with transaction.atomic():
+        bti = BasketTransactionIntegration.create(order.basket).save()
+
+    send_to_financial_manager_if_enabled(bti)

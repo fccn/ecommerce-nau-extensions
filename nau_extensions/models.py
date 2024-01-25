@@ -2,11 +2,10 @@ from django.db import models
 from django.forms import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from jsonfield import JSONField
+from nau_extensions.utils import get_order
+from nau_extensions.vatin import check_country_vatin
 from oscar.apps.address.abstract_models import AbstractAddress
 from oscar.core.loading import get_model
-
-from .utils import get_order
-from .vatin import check_country_vatin
 
 Basket = get_model("basket", "Basket")
 Country = get_model("address", "Country")
@@ -79,6 +78,16 @@ class BasketBillingInformation(AbstractAddress):
         fields = self.base_fields.remove("country")
         return self.get_address_field_values(fields)
 
+    @classmethod
+    def get_by_basket(cls, basket):
+        """
+        Get the `BasketBillingInformation` instance from a `basket` instance.
+        This is required because the `basket` class doesn't know this one.
+        And the relation basket.basket_billing_information isn't recognized
+        by Django.
+        """
+        return BasketBillingInformation.objects.filter(basket=basket).first()
+
 
 class BasketTransactionIntegration(models.Model):
     """
@@ -120,10 +129,10 @@ class BasketTransactionIntegration(models.Model):
     class Meta:
         get_latest_by = "created"
 
-    @staticmethod
-    def create(basket):
+    @classmethod
+    def create(cls, basket):
         """
-        Create a new basket transaction integration for a basket.
+        Create a new basket basket transaction integration or reuse an existing one for a basket.
         """
         order = get_order(basket)
         if not order:
@@ -131,4 +140,17 @@ class BasketTransactionIntegration(models.Model):
                 f"The creation of BasketTransactionIntegration requires a basket with an order"
                 f", basket '{basket}'"
             )
-        return BasketTransactionIntegration(basket=basket)
+        bti = cls.get_by_basket(basket)
+        if not bti:
+            bti = BasketTransactionIntegration(basket=basket)
+        return bti
+
+    @classmethod
+    def get_by_basket(cls, basket):
+        """
+        Get the `BasketTransactionIntegration` instance from a `basket` instance.
+        This is required because the `basket` class doesn't know this one.
+        And the relation basket.basket_transaction_integration isn't recognized
+        by Django.
+        """
+        return BasketTransactionIntegration.objects.filter(basket=basket).first()

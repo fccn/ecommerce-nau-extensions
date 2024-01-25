@@ -9,11 +9,10 @@ from django.contrib import messages
 from django.http import HttpResponse, HttpResponseForbidden
 from django.utils.translation import ugettext_lazy as _
 from django.views import generic
+from nau_extensions.forms import (BasketBillingInformationAddressForm,
+                                  BasketBillingInformationVATINForm)
+from nau_extensions.models import BasketBillingInformation
 from oscar.core.loading import get_class, get_model
-
-from .forms import (BasketBillingInformationAddressForm,
-                    BasketBillingInformationVATINForm)
-from .models import BasketBillingInformation
 
 logger = logging.getLogger(__name__)
 
