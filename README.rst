@@ -22,16 +22,13 @@ edit the `ecommerce/settings/private.py` file add change to::
     )
     LOGO_URL = "https://lms.nau.edu.pt/static/nau-basic/images/nau_azul.svg"
 
-    # Use custom tax strategy
-    NAU_EXTENSION_OSCAR_STRATEGY_CLASS = "ecommerce_plugin_paygate.strategy.DefaultStrategy"
-    
     # Configure tax as 23% used in Portugal
     NAU_EXTENSION_TAX_RATE = "0.298701299" # = 0.23/0.77
 
     NAU_FINANCIAL_MANAGER = {
         "edx": {
             "url": "http://financial-manager.local.nau.fccn.pt:8000/api/billing/transaction-complete/",
-            "token": "abcdABCD1234",
+            "token": "Bearer abcdABCD1234",
         }
     }
 

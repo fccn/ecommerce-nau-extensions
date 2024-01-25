@@ -6,11 +6,11 @@ import logging
 import requests
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
+from nau_extensions.models import (BasketBillingInformation,
+                                   BasketTransactionIntegration)
+from nau_extensions.utils import get_order
 from opaque_keys.edx.keys import CourseKey
 from oscar.core.loading import get_class, get_model
-
-from .models import BasketTransactionIntegration
-from .utils import get_order
 
 logger = logging.getLogger(__name__)
 Selector = get_class("partner.strategy", "Selector")
@@ -50,12 +50,19 @@ def sync_request_data(bti: BasketTransactionIntegration) -> dict:
     # initialize strategy
     basket = bti.basket
     basket.strategy = Selector().strategy(user=basket.owner)
-    bbi = basket.basket_billing_information
-
-    address_line_2 = bbi.line2 + (
-        ("," + bbi.line3) if bbi.line3 and len(bbi.line3) > 0 else ""
-    )
+    bbi = BasketBillingInformation.get_by_basket(basket)
     order = get_order(basket)
+
+    address_line_1 = bbi.line1
+    address_line_2 = bbi.line2 + (
+        ("," + bbi.line3) if bbi.line3 and len(bbi.line3) > 0 else ''
+    )
+    city = bbi.line4 if bbi else ''
+    postal_code = bbi.postcode if bbi else ''
+    state = bbi.state if bbi else ''
+    country_code = bbi.country.iso_3166_1_a2 if bbi else ''
+    vat_identification_number = bbi.vatin if bbi else ''
+    vat_identification_country = bbi.country.iso_3166_1_a2 if bbi else ''
 
     # generate a dict with all request data
     request_data = {
@@ -63,14 +70,14 @@ def sync_request_data(bti: BasketTransactionIntegration) -> dict:
         "transaction_type": "credit",
         "client_name": basket.owner.full_name,
         "email": basket.owner.email,
-        "address_line_1": bbi.line1,
+        "address_line_1": address_line_1,
         "address_line_2": address_line_2,
-        "city": bbi.line4,
-        "postal_code": bbi.postcode,
-        "state": bbi.state,
-        "country_code": bbi.country.iso_3166_1_a2,
-        "vat_identification_number": bbi.vatin,
-        "vat_identification_country": bbi.country.iso_3166_1_a2,
+        "city": city,
+        "postal_code": postal_code,
+        "state": state,
+        "country_code": country_code,
+        "vat_identification_number": vat_identification_number,
+        "vat_identification_country": vat_identification_country,
         "total_amount_exclude_vat": basket.total_excl_tax,
         "total_amount_include_vat": basket.total_incl_tax,
         "currency": basket.currency,
@@ -102,17 +109,24 @@ def _convert_order_lines(order):
     for line in order.lines.all():
         # line.discount_incl_tax
         # line.discount_excl_tax
-        course_run_key = CourseKey.from_string(line.product.course.id)
+        course = line.product.course
+        course_id = course.id if course else line.product.title
+        course_key = CourseKey.from_string(course.id) if course else None
+        organization_code = course_key.org if course else None
+        product_code = course_key.course if course else None
+        amount_exclude_vat = line.quantity * line.unit_price_excl_tax
+        amount_include_vat = line.quantity * line.unit_price_incl_tax
+        vat_tax = amount_include_vat - amount_exclude_vat
         result.append(
             {
                 "description": line.title,
                 "quantity": line.quantity,
-                "vat_tax": 1 - (line.unit_price_excl_tax - line.unit_price_incl_tax),
-                "amount_exclude_vat": line.quantity * line.unit_price_excl_tax,
-                "amount_include_vat": line.quantity * line.unit_price_incl_tax,
-                "organization_code": course_run_key.org,
-                "product_code": course_run_key.course,
-                "product_id": line.product.course.id,
+                "vat_tax": vat_tax,
+                "amount_exclude_vat": amount_exclude_vat,
+                "amount_include_vat": amount_include_vat,
+                "organization_code": organization_code,
+                "product_code": product_code,
+                "product_id": course_id,
             }
         )
     return result
@@ -138,13 +152,17 @@ def send_to_financial_manager_if_enabled(
         )
 
         # update state
-        if basket_transaction_integration.status_code == 200:
+        if response.status_code == 200:
             state = BasketTransactionIntegration.SENT_WITH_SUCCESS
         else:
             state = BasketTransactionIntegration.SENT_WITH_ERROR
         basket_transaction_integration.state = state
 
         # save the response output
-        basket_transaction_integration.response = response.content
+        try:
+            response_json = response.json()
+        except Exception as e:  # pylint: disable=broad-except
+            logger.exception("Error can't parse send to financial manager response as json [%s]", e)
 
+        basket_transaction_integration.response = response_json
         basket_transaction_integration.save()
