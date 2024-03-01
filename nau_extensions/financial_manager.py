@@ -53,16 +53,17 @@ def sync_request_data(bti: BasketTransactionIntegration) -> dict:
     bbi = BasketBillingInformation.get_by_basket(basket)
     order = get_order(basket)
 
-    address_line_1 = bbi.line1
-    address_line_2 = bbi.line2 + (
-        ("," + bbi.line3) if bbi.line3 and len(bbi.line3) > 0 else ''
-    )
-    city = bbi.line4 if bbi else ''
-    postal_code = bbi.postcode if bbi else ''
-    state = bbi.state if bbi else ''
-    country_code = bbi.country.iso_3166_1_a2 if bbi else ''
-    vat_identification_number = bbi.vatin if bbi else ''
-    vat_identification_country = bbi.country.iso_3166_1_a2 if bbi else ''
+    address_line_1 = getattr(bbi, "line1", None)
+    line2 = getattr(bbi, "line2", None)
+    line3 = getattr(bbi, "line3", None)
+    address_line_2 = ", ".join(filter(None, [line2, line3]))
+    address_line_2 = address_line_2 if address_line_2 else None
+    city = getattr(bbi, "line4", None)
+    postal_code = getattr(bbi, "postcode", None)
+    state = getattr(bbi, "state", None)
+    country_code = bbi.country.iso_3166_1_a2 if bbi else None
+    vat_identification_number = bbi.vatin if bbi else None
+    vat_identification_country = bbi.country.iso_3166_1_a2 if bbi else None
 
     # generate a dict with all request data
     request_data = {

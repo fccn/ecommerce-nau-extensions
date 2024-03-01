@@ -1,4 +1,3 @@
-from django.db import transaction
 from django.dispatch import receiver
 from nau_extensions.financial_manager import \
     send_to_financial_manager_if_enabled
@@ -20,7 +19,5 @@ def create_and_send_basket_transaction_integration_to_financial_manager(
     Create a Basket Transaction Integration object after a checkout of an Order;
     then send that information to the nau-financial-manager service.
     """
-    with transaction.atomic():
-        bti = BasketTransactionIntegration.create(order.basket).save()
-
+    bti = BasketTransactionIntegration.create(order.basket).save()
     send_to_financial_manager_if_enabled(bti)

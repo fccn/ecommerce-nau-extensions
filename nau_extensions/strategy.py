@@ -19,4 +19,4 @@ class SettingFixedRateTax(strategy.FixedRateTax):
         """
         The rate VAT that all products have.
         """
-        return D(settings.NAU_EXTENSION_TAX_RATE)
+        return D(getattr(settings, "NAU_EXTENSION_TAX_RATE", 0))

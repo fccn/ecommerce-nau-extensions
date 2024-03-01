@@ -48,6 +48,7 @@ clean: ## remove all the unneeded artifacts
 
 # It will use the `.isort.cfg` from ecommerce
 lint_isort: _prerequire
+	@echo "Run isort"
 	@cd ${ECOMMERCE_SOURCE_PATH} && \
 	isort --check-only --diff $(SRC_FOLDER_FULL_PATH)
 .PHONY: lint_isort
@@ -60,12 +61,14 @@ run_isort: _prerequire  ## Run the isort to sort the python imports
 
 # It will use the `setup.cfg` from ecommerce
 lint_pycodestyle: _prerequire
+	@echo "Run pycodestyle"
 	@cd ${ECOMMERCE_SOURCE_PATH} && \
 	pycodestyle --config=setup.cfg $(SRC_FOLDER_FULL_PATH)
 .PHONY: lint_pycodestyle
 
 # It will use the `pylintrc` from ecommerce
 lint_pylint: _prerequire
+	@echo "Run pylint"
 	@cd ${ECOMMERCE_SOURCE_PATH} && \
 	pylint -j 0 --rcfile=pylintrc --verbose --init-hook='import sys; sys.path.append("${ECOMMERCE_SOURCE_PATH}")' $(SRC_FOLDER_FULL_PATH)
 .PHONY: lint_pylint
