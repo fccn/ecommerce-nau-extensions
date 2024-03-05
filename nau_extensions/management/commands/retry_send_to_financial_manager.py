@@ -5,7 +5,8 @@ Script to synchronize courses to Richie marketing site
 import logging
 from datetime import datetime, timedelta
 
-from django.core.management.base import BaseCommand
+from django.conf import settings
+from django.core.management.base import BaseCommand, CommandError
 from nau_extensions.financial_manager import \
     send_to_financial_manager_if_enabled
 from nau_extensions.models import BasketTransactionIntegration
@@ -32,6 +33,11 @@ class Command(BaseCommand):
     )
 
     def add_arguments(self, parser):
+        """
+        Arguments to this Django Command.
+        `basket_id` to run for a specific Basket;
+        `delta_to_be_sent_in_seconds` to run all failed and pending on this time frame.
+        """
         parser.add_argument(
             "--basket_id",
             type=str,
@@ -42,7 +48,7 @@ class Command(BaseCommand):
             "--delta_to_be_sent_in_seconds",
             type=int,
             default=300,
-            help="Delta in seconds to retry the To be sent state",
+            help="Delta in seconds to retry",
         )
 
     def handle(self, *args, **kwargs):
@@ -71,9 +77,29 @@ class Command(BaseCommand):
             )
 
         delta_to_be_sent_in_seconds = kwargs["delta_to_be_sent_in_seconds"]
+        retry_success_count = 0
         for bti in btis:
             if bti.created <= datetime.now(bti.created.tzinfo) - timedelta(
                 seconds=delta_to_be_sent_in_seconds
             ):
                 log.info("Sending to financial manager basket_id=%d", bti.basket.id)
-                send_to_financial_manager_if_enabled(bti)
+                bti_updated = send_to_financial_manager_if_enabled(bti)
+                if bti_updated.is_sent_with_success:
+                    retry_success_count += 1
+                else:
+                    log.error("Error sending basket_id=%d", bti.basket.id)
+
+        total_count = len(btis)
+        log.info("Results:")
+        log.info("Retry with success %d", retry_success_count)
+        log.info("Total retries: %d", total_count)
+
+        if retry_success_count != total_count:
+            url = (
+                settings.ECOMMERCE_URL_ROOT +
+                "/admin/nau_extensions/baskettransactionintegration/"
+            )
+            log.error("Check the errors on: %s", url)
+            raise CommandError(
+                "Couldn't retry all pending information to financial manager"
+            )
