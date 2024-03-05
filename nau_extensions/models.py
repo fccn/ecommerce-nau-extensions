@@ -154,3 +154,11 @@ class BasketTransactionIntegration(models.Model):
         by Django.
         """
         return BasketTransactionIntegration.objects.filter(basket=basket).first()
+
+    @property
+    def is_sent_with_success(self) -> bool:
+        """
+        Property that show if this `BasketTransactionIntegration` was sent with
+        success to Financial Manager.
+        """
+        return self.state == BasketTransactionIntegration.SENT_WITH_SUCCESS
