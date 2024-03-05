@@ -79,9 +79,11 @@ def sync_request_data(bti: BasketTransactionIntegration) -> dict:
         "country_code": country_code,
         "vat_identification_number": vat_identification_number,
         "vat_identification_country": vat_identification_country,
-        "total_amount_exclude_vat": basket.total_excl_tax,
-        "total_amount_include_vat": basket.total_incl_tax,
-        "currency": basket.currency,
+        "total_amount_exclude_vat": order.total_excl_tax,
+        "total_amount_include_vat": order.total_incl_tax,
+        "total_discount_incl_tax": order.total_discount_incl_tax,
+        "total_discount_excl_tax": order.total_discount_excl_tax,
+        "currency": order.currency,
         "payment_type": _get_payment_type(order),
         "items": _convert_order_lines(order),
     }
@@ -108,8 +110,6 @@ def _convert_order_lines(order):
     """
     result = []
     for line in order.lines.all():
-        # line.discount_incl_tax
-        # line.discount_excl_tax
         course = line.product.course
         course_id = course.id if course else line.product.title
         course_key = CourseKey.from_string(course.id) if course else None
@@ -128,6 +128,8 @@ def _convert_order_lines(order):
                 "organization_code": organization_code,
                 "product_code": product_code,
                 "product_id": course_id,
+                "discount_excl_tax": line.discount_excl_tax,
+                "discount_incl_tax": line.discount_incl_tax,
             }
         )
     return result
@@ -163,7 +165,9 @@ def send_to_financial_manager_if_enabled(
         try:
             response_json = response.json()
         except Exception as e:  # pylint: disable=broad-except
+            response_json = None
             logger.exception("Error can't parse send to financial manager response as json [%s]", e)
 
         basket_transaction_integration.response = response_json
         basket_transaction_integration.save()
+    return basket_transaction_integration
