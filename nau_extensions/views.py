@@ -6,18 +6,28 @@ from abc import abstractmethod
 
 from django import shortcuts
 from django.contrib import messages
-from django.http import HttpResponse, HttpResponseForbidden
+from django.db import transaction
+from django.http import Http404, HttpResponse, HttpResponseForbidden
+from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views import generic
 from nau_extensions.forms import (BasketBillingInformationAddressForm,
                                   BasketBillingInformationVATINForm)
 from nau_extensions.models import BasketBillingInformation
+from nau_extensions.serializers import OrderReceiptLinkSerializer
 from oscar.core.loading import get_class, get_model
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+
+from ecommerce.extensions.api.permissions import IsStaffOrOwner
+from ecommerce.extensions.api.throttles import ServiceUserThrottle
 
 logger = logging.getLogger(__name__)
 
 UserAddress = get_model("address", "UserAddress")
 Basket = get_model("basket", "Basket")
+Order = get_model('order', 'Order')
 
 AbstractAddressForm = get_class("address.forms", "AbstractAddressForm")
 
@@ -187,3 +197,29 @@ class BasketBillingInformationVATINCreateUpdateView(
     def get_success_url(self):
         messages.info(self.request, _("VATIN saved"))
         return super().get_success_url()
+
+
+@method_decorator(transaction.non_atomic_requests, name='dispatch')
+class ReceiptLinkView(APIView):
+    """
+    API GET /payment/nau_extensions/receipt-link
+    """
+    permission_classes = (IsAuthenticated, IsStaffOrOwner,)
+    throttle_classes = (ServiceUserThrottle,)
+
+    def get(self, request):
+        order_id = request.query_params.get('order_id')
+        logger.info("Getting receipt_link of Order id=[%s]", order_id)
+        if order_id:
+            query_set = Order.objects.filter(id=order_id)
+            user = self.request.user
+            if not user.is_staff:
+                query_set = query_set.filter(user=user)
+            order = shortcuts.get_object_or_404(Order, id=order_id)
+            if not user.is_staff and order.user != user:
+                raise PermissionDenied
+            serializer = OrderReceiptLinkSerializer(order)
+            receipt_link = serializer.data['receipt_link']
+            logging.info("For Order id=[%s] returning receipt_link=[%s]", order_id, receipt_link)
+            return HttpResponse(receipt_link)
+        raise Http404("No id parameter found")

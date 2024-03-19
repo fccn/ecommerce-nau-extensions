@@ -171,3 +171,31 @@ def send_to_financial_manager_if_enabled(
         basket_transaction_integration.response = response_json
         basket_transaction_integration.save()
     return basket_transaction_integration
+
+
+def get_receipt_link(order):
+    """
+    Get the Receipt Link from NAU Financial Manager, this will transform the order_number to the receipt link.
+    """
+    site = order.basket.site
+    if is_financial_manager_enabled(site):
+        transaction_id = order.basket.order_number
+        receipt_link_url = _get_financial_manager_setting(site, "receipt-link-url")
+        if not receipt_link_url.endswith('/'):
+            receipt_link_url += "/"
+        receipt_link_url += transaction_id
+        token = _get_financial_manager_setting(site, "token")
+        try:
+            response = requests.post(
+                receipt_link_url,
+                headers={"Authorization": token},
+                timeout=10,
+            )
+        except Exception as e:  # pylint: disable=broad-except
+            logger.exception("Error can't get receipt link for transaction_id [%s] error: [%s]", transaction_id, e)
+        finally:
+            content = response.content()
+            logger.info("Get receipt link status: [%d] response: [%s]", response.status_code, content)
+        if response.status_code == 200:
+            return content
+    return None

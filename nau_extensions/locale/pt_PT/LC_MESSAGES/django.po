@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-07 15:51+0000\n"
+"POT-Creation-Date: 2024-03-19 17:43+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,12 +17,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: nau_extensions/models.py:37
+#: nau_extensions/models.py:36
 #: nau_extensions/templates/nau_extensions/checkout/basket_billing_information/vatin.html:21
 msgid "VAT Identification Number (VATIN)"
 msgstr "Número de Identificação Fiscal (NIF)"
 
-#: nau_extensions/models.py:41
+#: nau_extensions/models.py:40
 msgid ""
 "The value-added tax identification number or VAT identification number can "
 "be used to identify a business or a taxable person in the European Union."
@@ -31,27 +31,27 @@ msgstr ""
 "ou número de identificação para efeitos de IVA pode ser utilizado para "
 "identificar uma empresa ou um sujeito passivo na União Europeia."
 
-#: nau_extensions/models.py:48
+#: nau_extensions/models.py:47
 msgid "Basket Billing Information"
 msgstr "Informação de faturação"
 
-#: nau_extensions/models.py:49
+#: nau_extensions/models.py:48
 msgid "Basket Billing Informations"
 msgstr "Informações de faturação"
 
-#: nau_extensions/models.py:69
+#: nau_extensions/models.py:68
 msgid "Incorrect vatin format for country"
 msgstr "Formato de dados incorreto para o país"
 
-#: nau_extensions/models.py:92
+#: nau_extensions/models.py:102
 msgid "To be sent"
 msgstr "A enviar"
 
-#: nau_extensions/models.py:93
+#: nau_extensions/models.py:103
 msgid "Sent with success"
 msgstr "Enviado com sucesso"
 
-#: nau_extensions/models.py:94
+#: nau_extensions/models.py:104
 msgid "Sent with error"
 msgstr "Enviado com erro"
 
@@ -102,10 +102,14 @@ msgstr "País"
 msgid "VATIN"
 msgstr "NIF"
 
-#: nau_extensions/views.py:151
+#: nau_extensions/templates/nau_extensions/checkout/receipt_partial.html:4
+msgid "Download receipt"
+msgstr "Descarregar recibo"
+
+#: nau_extensions/views.py:160
 msgid "Address saved"
 msgstr "Endereço guardado"
 
-#: nau_extensions/views.py:189
+#: nau_extensions/views.py:198
 msgid "VATIN saved"
 msgstr "NIF guardado"
