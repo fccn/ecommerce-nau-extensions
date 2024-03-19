@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-07 15:51+0000\n"
+"POT-Creation-Date: 2024-03-19 17:43+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,38 +18,38 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: nau_extensions/models.py:37
+#: nau_extensions/models.py:36
 #: nau_extensions/templates/nau_extensions/checkout/basket_billing_information/vatin.html:21
 msgid "VAT Identification Number (VATIN)"
 msgstr ""
 
-#: nau_extensions/models.py:41
+#: nau_extensions/models.py:40
 msgid ""
 "The value-added tax identification number or VAT identification number can "
 "be used to identify a business or a taxable person in the European Union."
 msgstr ""
 
-#: nau_extensions/models.py:48
+#: nau_extensions/models.py:47
 msgid "Basket Billing Information"
 msgstr ""
 
-#: nau_extensions/models.py:49
+#: nau_extensions/models.py:48
 msgid "Basket Billing Informations"
 msgstr ""
 
-#: nau_extensions/models.py:69
+#: nau_extensions/models.py:68
 msgid "Incorrect vatin format for country"
 msgstr ""
 
-#: nau_extensions/models.py:92
+#: nau_extensions/models.py:102
 msgid "To be sent"
 msgstr ""
 
-#: nau_extensions/models.py:93
+#: nau_extensions/models.py:103
 msgid "Sent with success"
 msgstr ""
 
-#: nau_extensions/models.py:94
+#: nau_extensions/models.py:104
 msgid "Sent with error"
 msgstr ""
 
@@ -100,10 +100,14 @@ msgstr ""
 msgid "VATIN"
 msgstr ""
 
-#: nau_extensions/views.py:151
+#: nau_extensions/templates/nau_extensions/checkout/receipt_partial.html:4
+msgid "Download receipt"
+msgstr ""
+
+#: nau_extensions/views.py:160
 msgid "Address saved"
 msgstr ""
 
-#: nau_extensions/views.py:189
+#: nau_extensions/views.py:198
 msgid "VATIN saved"
 msgstr ""

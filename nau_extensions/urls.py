@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from nau_extensions.views import (
     BasketBillingInformationAddressCreateUpdateView,
-    BasketBillingInformationVATINCreateUpdateView)
+    BasketBillingInformationVATINCreateUpdateView, ReceiptLinkView)
 
 app_name = "ecommerce_nau_extensions"
 
@@ -17,4 +17,11 @@ urlpatterns = [
         BasketBillingInformationVATINCreateUpdateView.as_view(),
         name="nau-basket-billing-information-vatin",
     ),
+
+    url(
+        r"receipt-link/$",
+        ReceiptLinkView.as_view(),
+        name="receipt_link_view",
+    ),
+
 ]
