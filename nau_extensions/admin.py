@@ -12,9 +12,9 @@ admin.site.register(BasketBillingInformation)
 class BasketTransactionIntegrationAdmin(admin.ModelAdmin):
     list_filter = ('state',)
     search_fields = ('basket', 'state',)
-    list_display = ('basket', 'state', 'created')
-    fields = ('basket', 'state', 'created', 'formatted_request', 'formatted_response')
-    readonly_fields = ('basket', 'state', 'created', 'formatted_request', 'formatted_response')
+    list_display = ('basket', 'state', 'created', 'modified')
+    fields = ('basket', 'state', 'created', 'modified', 'formatted_request', 'formatted_response')
+    readonly_fields = ('basket', 'state', 'created', 'modified', 'formatted_request', 'formatted_response')
     show_full_result_count = False
 
     def formatted_request(self, obj):
