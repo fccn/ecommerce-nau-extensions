@@ -59,7 +59,7 @@ class Command(BaseCommand):
 
         basket_id = kwargs["basket_id"]
         if basket_id:
-            basket = Basket.objects.filter(id=basket_id)
+            basket = Basket.objects.get(id=basket_id)
             if not basket:
                 raise ValueError(f"No basket found for basket_id={basket_id}")
             bti = BasketTransactionIntegration.get_by_basket(basket)
