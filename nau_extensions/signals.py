@@ -19,5 +19,7 @@ def create_and_send_basket_transaction_integration_to_financial_manager(
     Create a Basket Transaction Integration object after a checkout of an Order;
     then send that information to the nau-financial-manager service.
     """
-    bti = BasketTransactionIntegration.create(order.basket).save()
+    bti: BasketTransactionIntegration = BasketTransactionIntegration.create(order.basket)
+    bti.save()
+    bti.refresh_from_db()
     send_to_financial_manager_if_enabled(bti)
