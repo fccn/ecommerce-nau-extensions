@@ -456,7 +456,7 @@ class FinancialManagerNAUExtensionsTests(TestCase):
         json_data="https://example.com/somereceipt.pdf",
         status_code=200,
     ))
-    def test_get_receipt_link(self, mock_fm_receipt_link):
+    def test_get_receipt_link_found(self, mock_fm_receipt_link):
         """
         Test the `get_receipt_link` method.
         """
@@ -489,3 +489,48 @@ class FinancialManagerNAUExtensionsTests(TestCase):
         mock_fm_receipt_link.assert_called_once_with(f"https://finacial-manager.example.com/api/billing/receipt-link/{basket.order_number}/", headers={'Authorization': 'a-very-long-token'}, timeout=10)
 
         self.assertEqual(link, "https://example.com/somereceipt.pdf")
+
+    @override_settings(
+        NAU_FINANCIAL_MANAGER={
+            "edx": {
+                "receipt-link-url": "https://finacial-manager.example.com/api/billing/receipt-link/",
+                "token": "a-very-long-token",
+            },
+        },
+    )
+    @mock.patch.object(requests, "post", return_value=MockResponse(
+        status_code=404,
+    ))
+    def test_get_receipt_link_not_found(self, mock_fm_receipt_link):
+        """
+        Test the `get_receipt_link` method.
+        """
+        partner = PartnerFactory(short_code="edX")
+
+        site_configuration = SiteConfigurationFactory(partner=partner)
+        site_configuration.site = SiteFactory(name="openedx")
+        site = site_configuration.site
+
+        course = CourseFactory(
+            id="course-v1:edX+DemoX+Demo_Course",
+            name="edX Demonstration Course",
+            partner=partner,
+        )
+        honor_product = course.create_or_update_seat("honor", False, 0)
+        verified_product = course.create_or_update_seat("verified", True, 10)
+
+        owner = UserFactory(email="ecommerce@example.com")
+
+        # create an empty basket so we know what it's inside
+        basket = create_basket(owner=owner, empty=True, site=site)
+        basket.add_product(verified_product)
+        basket.add_product(honor_product)
+        basket.save()
+
+        # creating an order will mark the card submitted
+        order = create_order(basket=basket)
+
+        link = get_receipt_link(order)
+        mock_fm_receipt_link.assert_called_once_with(f"https://finacial-manager.example.com/api/billing/receipt-link/{basket.order_number}/", headers={'Authorization': 'a-very-long-token'}, timeout=10)
+
+        self.assertEqual(link, None)

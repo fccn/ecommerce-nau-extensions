@@ -186,6 +186,7 @@ def get_receipt_link(order):
         receipt_link_url += transaction_id + '/'
         token = _get_financial_manager_setting(site, "token")
         try:
+            logger.info("Get receipt link for transaction id [%s]", transaction_id)
             response = requests.post(
                 receipt_link_url,
                 headers={"Authorization": token},
@@ -193,9 +194,10 @@ def get_receipt_link(order):
             )
         except Exception as e:  # pylint: disable=broad-except
             logger.exception("Error can't get receipt link for transaction_id [%s] error: [%s]", transaction_id, e)
+            return None
         finally:
-            content = response.content()
-            logger.info("Get receipt link status: [%d] response: [%s]", response.status_code, content)
+            logger.info("Received the receipt link status_code: [%d]")
         if response.status_code == 200:
-            return content
+            logger.info("Received the receipt link content: [%s]", response.content)
+            return response.content
     return None
