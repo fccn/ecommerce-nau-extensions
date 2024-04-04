@@ -486,6 +486,6 @@ class FinancialManagerNAUExtensionsTests(TestCase):
         order = create_order(basket=basket)
 
         link = get_receipt_link(order)
-        mock_fm_receipt_link.assert_called_once_with(f"https://finacial-manager.example.com/api/billing/receipt-link/{basket.order_number}", headers={'Authorization': 'a-very-long-token'}, timeout=10)
+        mock_fm_receipt_link.assert_called_once_with(f"https://finacial-manager.example.com/api/billing/receipt-link/{basket.order_number}/", headers={'Authorization': 'a-very-long-token'}, timeout=10)
 
         self.assertEqual(link, "https://example.com/somereceipt.pdf")

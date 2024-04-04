@@ -182,8 +182,8 @@ def get_receipt_link(order):
         transaction_id = order.basket.order_number
         receipt_link_url = _get_financial_manager_setting(site, "receipt-link-url")
         if not receipt_link_url.endswith('/'):
-            receipt_link_url += "/"
-        receipt_link_url += transaction_id
+            receipt_link_url += '/'
+        receipt_link_url += transaction_id + '/'
         token = _get_financial_manager_setting(site, "token")
         try:
             response = requests.post(
