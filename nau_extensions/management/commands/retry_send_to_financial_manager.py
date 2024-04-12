@@ -53,7 +53,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         """
-        Synchronize courses to the Richie marketing site, print to console its sync progress.
+        Synchronize Basket Transaction Integrations to Financial Manager system,
+        print to console its sync progress.
         """
         btis: list = None
 
@@ -83,8 +84,8 @@ class Command(BaseCommand):
                 seconds=delta_to_be_sent_in_seconds
             ):
                 log.info("Sending to financial manager basket_id=%d", bti.basket.id)
-                bti_updated = send_to_financial_manager_if_enabled(bti)
-                if bti_updated.is_sent_with_success:
+                sent = send_to_financial_manager_if_enabled(bti)
+                if sent:
                     retry_success_count += 1
                 else:
                     log.error("Error sending basket_id=%d", bti.basket.id)
