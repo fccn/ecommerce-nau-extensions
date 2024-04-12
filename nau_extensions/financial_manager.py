@@ -137,7 +137,7 @@ def _convert_order_lines(order):
 
 def send_to_financial_manager_if_enabled(
     basket_transaction_integration: BasketTransactionIntegration,
-):
+) -> bool:
     """
     The service that calls the nau-financial-manager with the request data pre saved on the
     `BasketTransactionIntegration` instance, then save the response data.
@@ -170,7 +170,8 @@ def send_to_financial_manager_if_enabled(
 
         basket_transaction_integration.response = response_json
         basket_transaction_integration.save()
-    return basket_transaction_integration
+        return True
+    return False
 
 
 def get_receipt_link(order):
