@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-19 17:43+0000\n"
+"POT-Creation-Date: 2024-04-12 14:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,18 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: nau_extensions/admin.py:35
+msgid "Retry Send to Financial Manager System"
+msgstr ""
+
+#: nau_extensions/admin.py:46
+msgid "Retry Send to Financial Manager System with success."
+msgstr ""
+
+#: nau_extensions/admin.py:54
+msgid "Retry Send to Financial Manager System with an error."
+msgstr ""
 
 #: nau_extensions/models.py:36
 #: nau_extensions/templates/nau_extensions/checkout/basket_billing_information/vatin.html:21
