@@ -115,16 +115,16 @@ def _convert_order_lines(order):
         course_key = CourseKey.from_string(course.id) if course else None
         organization_code = course_key.org if course else None
         product_code = course_key.course if course else None
-        amount_exclude_vat = line.quantity * line.unit_price_excl_tax
-        amount_include_vat = line.quantity * line.unit_price_incl_tax
-        vat_tax = amount_include_vat - amount_exclude_vat
+        unit_price_excl_tax = line.quantity * line.unit_price_excl_tax
+        unit_price_incl_tax = line.quantity * line.unit_price_incl_tax
+        vat_tax = unit_price_incl_tax - unit_price_excl_tax
         result.append(
             {
                 "description": line.title,
                 "quantity": line.quantity,
                 "vat_tax": vat_tax,
-                "amount_exclude_vat": amount_exclude_vat,
-                "amount_include_vat": amount_include_vat,
+                "unit_price_excl_tax": unit_price_excl_tax,
+                "unit_price_incl_tax": unit_price_incl_tax,
                 "organization_code": organization_code,
                 "product_code": product_code,
                 "product_id": course_id,
