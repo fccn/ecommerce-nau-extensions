@@ -379,7 +379,7 @@ class FinancialManagerNAUExtensionsTests(TestCase):
             "post",
             return_value=MockResponse(
                 json_data=mock_response_json_data,
-                status_code=200,
+                status_code=201,
             ),
         ):
             send_to_financial_manager_if_enabled(bti)
@@ -436,12 +436,130 @@ class FinancialManagerNAUExtensionsTests(TestCase):
             "post",
             return_value=MockResponse(
                 json_data=mock_response_json_data,
-                status_code=200,
+                status_code=201,
             ),
         ):
             send_to_financial_manager_if_enabled(bti)
 
         self.assertEqual(bti.state, BasketTransactionIntegration.SENT_WITH_SUCCESS)
+        self.assertEqual(mock_response_json_data, bti.response)
+
+    @override_settings(
+        NAU_FINANCIAL_MANAGER={
+            "edx": {
+                "url": "https://finacial-manager.example.com/api/billing/transaction-complete/",
+                "token": "a-very-long-token",
+            },
+        },
+    )
+    def test_send_to_financial_manager_duplicate_transaction(self):
+        """
+        Test that sends transaction to financial manager system with an already sent transaction.
+        """
+        partner = PartnerFactory(short_code="edX")
+
+        site_configuration = SiteConfigurationFactory(partner=partner)
+        site_configuration.site = SiteFactory(name="openedx")
+        site = site_configuration.site
+
+        course = CourseFactory(
+            id="course-v1:edX+DemoX+Demo_Course",
+            name="edX Demonstration Course",
+            partner=partner,
+        )
+        honor_product = course.create_or_update_seat("honor", False, 0)
+        verified_product = course.create_or_update_seat("verified", True, 10)
+
+        owner = UserFactory(email="ecommerce@example.com")
+
+        # create an empty basket so we know what it's inside
+        basket = create_basket(owner=owner, empty=True, site=site)
+        basket.add_product(verified_product)
+        basket.add_product(honor_product)
+        basket.save()
+
+        # creating an order will mark the card submitted
+        create_order(basket=basket)
+
+        bti = BasketTransactionIntegration.create(basket)
+        bti.save()
+
+        mock_response_json_data = {
+            "transaction_id": [
+                "transaction with this transaction id already exists."
+            ],
+        }
+
+        with mock.patch.object(
+            requests,
+            "post",
+            return_value=MockResponse(
+                json_data=mock_response_json_data,
+                status_code=400,
+            ),
+        ):
+            send_to_financial_manager_if_enabled(bti)
+
+        self.assertEqual(bti.state, BasketTransactionIntegration.SENT_WITH_SUCCESS)
+        self.assertEqual(mock_response_json_data, bti.response)
+
+    @override_settings(
+        NAU_FINANCIAL_MANAGER={
+            "edx": {
+                "url": "https://finacial-manager.example.com/api/billing/transaction-complete/",
+                "token": "a-very-long-token",
+            },
+        },
+    )
+    def test_send_to_financial_manager_other_error(self):
+        """
+        Test that sends a transaction to financial manager system, but receives an unexpected error.
+        """
+        partner = PartnerFactory(short_code="edX")
+
+        site_configuration = SiteConfigurationFactory(partner=partner)
+        site_configuration.site = SiteFactory(name="openedx")
+        site = site_configuration.site
+
+        course = CourseFactory(
+            id="course-v1:edX+DemoX+Demo_Course",
+            name="edX Demonstration Course",
+            partner=partner,
+        )
+        honor_product = course.create_or_update_seat("honor", False, 0)
+        verified_product = course.create_or_update_seat("verified", True, 10)
+
+        owner = UserFactory(email="ecommerce@example.com")
+
+        # create an empty basket so we know what it's inside
+        basket = create_basket(owner=owner, empty=True, site=site)
+        basket.add_product(verified_product)
+        basket.add_product(honor_product)
+        basket.save()
+
+        # creating an order will mark the card submitted
+        create_order(basket=basket)
+
+        bti = BasketTransactionIntegration.create(basket)
+        bti.save()
+
+        mock_response_json_data = {
+            "other_field": [
+                "Some error."
+            ],
+        }
+
+        with mock.patch.object(
+            requests,
+            "post",
+            return_value=MockResponse(
+                json_data=mock_response_json_data,
+                status_code=400,
+            ),
+        ):
+            send_to_financial_manager_if_enabled(bti)
+
+        self.assertEqual(bti.state, BasketTransactionIntegration.SENT_WITH_ERROR)
         self.assertEqual(mock_response_json_data, bti.response)
 
     @override_settings(
