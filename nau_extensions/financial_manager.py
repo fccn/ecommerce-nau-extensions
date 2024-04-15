@@ -154,19 +154,28 @@ def send_to_financial_manager_if_enabled(
             timeout=30,
         )
 
-        # update state
-        if response.status_code == 200:
-            state = BasketTransactionIntegration.SENT_WITH_SUCCESS
-        else:
-            state = BasketTransactionIntegration.SENT_WITH_ERROR
-        basket_transaction_integration.state = state
-
-        # save the response output
+        # Convert response to json
         try:
             response_json = response.json()
         except Exception as e:  # pylint: disable=broad-except
             response_json = None
             logger.exception("Error can't parse send to financial manager response as json [%s]", e)
+
+        # update state
+        state = BasketTransactionIntegration.SENT_WITH_ERROR
+        if response.status_code == 201:
+            state = BasketTransactionIntegration.SENT_WITH_SUCCESS
+
+        # is duplicate
+        if response.status_code == 400:
+            transaction_id_error = response_json.get("transaction_id", [])
+            if len(transaction_id_error) > 0 \
+                    and transaction_id_error[0] == "transaction with this transaction id already exists.":
+                state = BasketTransactionIntegration.SENT_WITH_SUCCESS
+
+        basket_transaction_integration.state = state
+
+        # save the response output
 
         basket_transaction_integration.response = response_json
         basket_transaction_integration.save()
