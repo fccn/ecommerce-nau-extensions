@@ -98,8 +98,8 @@ class FinancialManagerNAUExtensionsTests(TestCase):
                 "items": [
                     # verified
                     {
-                        "unit_price_excl_tax": Decimal("10.00"),
-                        "unit_price_incl_tax": Decimal("10.00"),
+                        "unit_price_excl_vat": Decimal("10.00"),
+                        "unit_price_incl_vat": Decimal("10.00"),
                         "description": "Seat in edX Demonstration Course with verified certificate",
                         'discount_excl_tax': Decimal('0.00'),
                         'discount_incl_tax': Decimal('0.00'),
@@ -111,8 +111,8 @@ class FinancialManagerNAUExtensionsTests(TestCase):
                     },
                     # honor
                     {
-                        "unit_price_excl_tax": Decimal("0.00"),
-                        "unit_price_incl_tax": Decimal("0.00"),
+                        "unit_price_excl_vat": Decimal("0.00"),
+                        "unit_price_incl_vat": Decimal("0.00"),
                         "description": "Seat in edX Demonstration Course with honor certificate",
                         'discount_excl_tax': Decimal('0.00'),
                         'discount_incl_tax': Decimal('0.00'),
@@ -200,8 +200,8 @@ class FinancialManagerNAUExtensionsTests(TestCase):
                 "items": [
                     # verified
                     {
-                        "unit_price_excl_tax": Decimal("10.00"),
-                        "unit_price_incl_tax": Decimal("12.99"),
+                        "unit_price_excl_vat": Decimal("10.00"),
+                        "unit_price_incl_vat": Decimal("12.99"),
                         "description": "Seat in edX Demonstration Course with verified certificate",
                         'discount_excl_tax': Decimal('0.00'),
                         'discount_incl_tax': Decimal('0.00'),
@@ -213,8 +213,8 @@ class FinancialManagerNAUExtensionsTests(TestCase):
                     },
                     # honor
                     {
-                        "unit_price_excl_tax": Decimal("0.00"),
-                        "unit_price_incl_tax": Decimal("0.00"),
+                        "unit_price_excl_vat": Decimal("0.00"),
+                        "unit_price_incl_vat": Decimal("0.00"),
                         "description": "Seat in edX Demonstration Course with honor certificate",
                         'discount_excl_tax': Decimal('0.00'),
                         'discount_incl_tax': Decimal('0.00'),
@@ -287,8 +287,8 @@ class FinancialManagerNAUExtensionsTests(TestCase):
                 "items": [
                     # verified
                     {
-                        "unit_price_excl_tax": Decimal("10.00"),
-                        "unit_price_incl_tax": Decimal("10.00"),
+                        "unit_price_excl_vat": Decimal("10.00"),
+                        "unit_price_incl_vat": Decimal("10.00"),
                         "description": "Seat in edX Demonstration Course with verified certificate",
                         "discount_excl_tax": Decimal("0.00"),
                         "discount_incl_tax": Decimal("0.00"),
@@ -300,8 +300,8 @@ class FinancialManagerNAUExtensionsTests(TestCase):
                     },
                     # honor
                     {
-                        "unit_price_excl_tax": Decimal("0.00"),
-                        "unit_price_incl_tax": Decimal("0.00"),
+                        "unit_price_excl_vat": Decimal("0.00"),
+                        "unit_price_incl_vat": Decimal("0.00"),
                         "description": "Seat in edX Demonstration Course with honor certificate",
                         "discount_excl_tax": Decimal("0.00"),
                         "discount_incl_tax": Decimal("0.00"),
