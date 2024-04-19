@@ -24,6 +24,9 @@ class Command(BaseCommand):
     the Financial Manager system.
     By default, will retry the BasketTransactionIntegration objects where its state is sent with
     error and also send the pending to be sent that have been created more than 5 minutes ago.
+
+    Example to retry last 24 hours:
+      python manage.py retry_send_to_financial_manager --delta_in_minutes=1440
     """
 
     help = (
@@ -36,7 +39,7 @@ class Command(BaseCommand):
         """
         Arguments to this Django Command.
         `basket_id` to run for a specific Basket;
-        `delta_to_be_sent_in_seconds` to run all failed and pending on this time frame.
+        `delta_in_minutes` to run all failed and pending on this time frame.
         """
         parser.add_argument(
             "--basket_id",
@@ -45,7 +48,7 @@ class Command(BaseCommand):
             help="Basket id to synchronize, otherwise all pending baskets will be sent",
         )
         parser.add_argument(
-            "--delta_to_be_sent_in_seconds",
+            "--delta_in_minutes",
             type=int,
             default=300,
             help="Delta in seconds to retry",
@@ -77,11 +80,11 @@ class Command(BaseCommand):
                 ]
             )
 
-        delta_to_be_sent_in_seconds = kwargs["delta_to_be_sent_in_seconds"]
+        delta_in_minutes = kwargs["delta_in_minutes"]
         retry_success_count = 0
         for bti in btis:
             if bti.created <= datetime.now(bti.created.tzinfo) - timedelta(
-                seconds=delta_to_be_sent_in_seconds
+                minutes=delta_in_minutes
             ):
                 log.info("Sending to financial manager basket_id=%d", bti.basket.id)
                 sent = send_to_financial_manager_if_enabled(bti)
