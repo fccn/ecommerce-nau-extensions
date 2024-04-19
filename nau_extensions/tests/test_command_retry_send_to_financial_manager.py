@@ -33,7 +33,7 @@ class CommandsNAUExtensionsTests(TestCase):
         )
         bti_pending = self._create_basket_transaction_integration()
 
-        call_command("retry_send_to_financial_manager", delta_to_be_sent_in_seconds=0)
+        call_command("retry_send_to_financial_manager", delta_in_minutes=0)
         send_mock.assert_called_once_with(bti_pending)
 
     def test_retry_send_to_financial_manager_one_each_state(self, send_mock):
@@ -53,7 +53,7 @@ class CommandsNAUExtensionsTests(TestCase):
         bti_error.state = BasketTransactionIntegration.SENT_WITH_ERROR
         bti_error.save()
 
-        call_command("retry_send_to_financial_manager", delta_to_be_sent_in_seconds=0)
+        call_command("retry_send_to_financial_manager", delta_in_minutes=0)
         self.assertEqual(send_mock.call_count, 2)
 
     def test_retry_send_to_financial_manager_multiple(self, send_mock):
@@ -62,5 +62,5 @@ class CommandsNAUExtensionsTests(TestCase):
         """
         for _ in range(10):
             self._create_basket_transaction_integration()
-        call_command("retry_send_to_financial_manager", delta_to_be_sent_in_seconds=0)
+        call_command("retry_send_to_financial_manager", delta_in_minutes=0)
         self.assertEqual(send_mock.call_count, 10)
