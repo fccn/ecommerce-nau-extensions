@@ -197,7 +197,7 @@ def get_receipt_link(order):
         token = _get_financial_manager_setting(site, "token")
         try:
             logger.info("Get receipt link for transaction id [%s]", transaction_id)
-            response = requests.post(
+            response = requests.get(
                 receipt_link_url,
                 headers={"Authorization": token},
                 timeout=10,

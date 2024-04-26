@@ -570,7 +570,7 @@ class FinancialManagerNAUExtensionsTests(TestCase):
             },
         },
     )
-    @mock.patch.object(requests, "post", return_value=MockResponse(
+    @mock.patch.object(requests, "get", return_value=MockResponse(
         json_data="https://example.com/somereceipt.pdf",
         status_code=200,
     ))
@@ -616,7 +616,7 @@ class FinancialManagerNAUExtensionsTests(TestCase):
             },
         },
     )
-    @mock.patch.object(requests, "post", return_value=MockResponse(
+    @mock.patch.object(requests, "get", return_value=MockResponse(
         status_code=404,
     ))
     def test_get_receipt_link_not_found(self, mock_fm_receipt_link):
