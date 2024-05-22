@@ -17,6 +17,7 @@ class OrderReceiptLinkSerializer(serializers.ModelSerializer):
 
     def get_receipt_link(self, obj):
         # return "https://ilink.pt/xpto.pdf"
+        # return None
         return get_receipt_link(obj)
 
     class Meta:

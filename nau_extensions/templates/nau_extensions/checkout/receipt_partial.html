@@ -15,21 +15,23 @@
     }
 
     httpGetAsync('/payment/nau_extensions/receipt-link/?order_id={{ order.id }}', function( data ) {
-        var receiptLink = document.getElementById("receiptLink");
+        if (data) {
+            var receiptLink = document.getElementById("receiptLink");
 
-        // update the link to element
-        receiptLink.setAttribute('href', data);
-        
-        // make receipt link visible
-        receiptLink.style.display = 'block';
+            // update the link to element
+            receiptLink.setAttribute('href', data);
+            
+            // make receipt link visible
+            receiptLink.style.display = 'block';
 
-        // Declare a fragment:
-        var fragment = document.createDocumentFragment();
+            // Declare a fragment:
+            var fragment = document.createDocumentFragment();
 
-        // Append desired element to the fragment:
-        fragment.appendChild(receiptLink);
+            // Append desired element to the fragment:
+            fragment.appendChild(receiptLink);
 
-        // Append fragment to desired element:
-        document.getElementsByClassName('confirm-message')[0].appendChild(fragment);
+            // Append fragment to desired element:
+            document.getElementsByClassName('confirm-message')[0].appendChild(fragment);
+        }
     });
 </script>
