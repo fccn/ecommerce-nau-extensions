@@ -221,5 +221,5 @@ class ReceiptLinkView(APIView):
             serializer = OrderReceiptLinkSerializer(order)
             receipt_link = serializer.data['receipt_link']
             logging.info("For Order id=[%s] returning receipt_link=[%s]", order_id, receipt_link)
-            return HttpResponse(receipt_link)
+            return HttpResponse(receipt_link if receipt_link else '')
         raise Http404("No id parameter found")
