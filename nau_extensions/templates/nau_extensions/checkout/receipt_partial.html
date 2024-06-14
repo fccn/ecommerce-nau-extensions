@@ -1,34 +1,39 @@
 {% load i18n %}
 
-<a id="receiptLink" href="#" style="display: none;">
-    {% trans "Download receipt" as tmsg %}{{ tmsg | force_escape }}
-</a>
+<p id="receiptContainer" style="display: none;">
+  <br/>
+  <a id="receiptLink" href="#" target="_blank">
+      {% trans "Download receipt" as tmsg %}{{ tmsg | force_escape }}
+  </a>
+</p>
 <script>
     function httpGetAsync(theUrl, callback) {
         var xmlHttp = new XMLHttpRequest();
-        xmlHttp.onreadystatechange = function() { 
+        xmlHttp.onreadystatechange = function() {
             if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
                 callback(xmlHttp.responseText);
         }
-        xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+        xmlHttp.open("GET", theUrl, true); // true for asynchronous
         xmlHttp.send(null);
     }
 
     httpGetAsync('/payment/nau_extensions/receipt-link/?order_id={{ order.id }}', function( data ) {
         if (data) {
             var receiptLink = document.getElementById("receiptLink");
+            var link = JSON.parse(data).response;
+            var receiptContainer = document.getElementById("receiptContainer");
 
             // update the link to element
-            receiptLink.setAttribute('href', data);
-            
+            receiptLink.setAttribute('href', link);
+
             // make receipt link visible
-            receiptLink.style.display = 'block';
+            receiptContainer.style.display = 'block';
 
             // Declare a fragment:
             var fragment = document.createDocumentFragment();
 
             // Append desired element to the fragment:
-            fragment.appendChild(receiptLink);
+            fragment.appendChild(receiptContainer);
 
             // Append fragment to desired element:
             document.getElementsByClassName('confirm-message')[0].appendChild(fragment);
