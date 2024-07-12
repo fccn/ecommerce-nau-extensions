@@ -53,6 +53,10 @@ def sync_request_data(bti: BasketTransactionIntegration) -> dict:
     bbi = BasketBillingInformation.get_by_basket(basket)
     order = get_order(basket)
 
+    client_name = ' '.join(filter(None, [getattr(bbi, "first_name", None), getattr(bbi, "last_name", None)]))
+    # fall back to the requested user full name, received from LMS.
+    if not client_name:
+        client_name = basket.owner.full_name
     address_line_1 = getattr(bbi, "line1", None)
     line2 = getattr(bbi, "line2", None)
     line3 = getattr(bbi, "line3", None)
@@ -69,7 +73,7 @@ def sync_request_data(bti: BasketTransactionIntegration) -> dict:
     request_data = {
         "transaction_id": basket.order_number,
         "transaction_type": "credit",
-        "client_name": basket.owner.full_name,
+        "client_name": client_name,
         "email": basket.owner.email,
         "address_line_1": address_line_1,
         "address_line_2": address_line_2,

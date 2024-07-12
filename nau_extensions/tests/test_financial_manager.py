@@ -42,7 +42,7 @@ class FinancialManagerNAUExtensionsTests(TestCase):
         honor_product = course.create_or_update_seat("honor", False, 0)
         verified_product = course.create_or_update_seat("verified", True, 10)
 
-        owner = UserFactory(email="ecommerce@example.com")
+        owner = UserFactory(email="ecommerce@example.com", full_name="Jon Snow")
 
         # create an empty basket so we know what it's inside
         basket = create_basket(owner=owner, empty=True)
@@ -61,6 +61,8 @@ class FinancialManagerNAUExtensionsTests(TestCase):
         country.save()
 
         bbi = BasketBillingInformation()
+        bbi.first_name = "Fundação"
+        bbi.last_name = "Ciência Tecnologia"
         bbi.line1 = "Av. do Brasil n.º 101"
         bbi.line2 = "AA"
         bbi.line3 = "BB CC"
@@ -79,7 +81,7 @@ class FinancialManagerNAUExtensionsTests(TestCase):
             {
                 "transaction_id": basket.order_number,
                 "transaction_type": "credit",
-                "client_name": owner.full_name,
+                "client_name": "Fundação Ciência Tecnologia",
                 "email": "ecommerce@example.com",
                 "address_line_1": "Av. do Brasil n.º 101",
                 "address_line_2": "AA, BB CC",
@@ -144,7 +146,7 @@ class FinancialManagerNAUExtensionsTests(TestCase):
         honor_product = course.create_or_update_seat("honor", False, 0)
         verified_product = course.create_or_update_seat("verified", True, 10)
 
-        owner = UserFactory(email="ecommerce@example.com")
+        owner = UserFactory(email="ecommerce@example.com", full_name="Jon Snow")
 
         # create an empty basket so we know what it's inside
         basket = create_basket(owner=owner, empty=True)
@@ -181,7 +183,7 @@ class FinancialManagerNAUExtensionsTests(TestCase):
             {
                 "transaction_id": basket.order_number,
                 "transaction_type": "credit",
-                "client_name": owner.full_name,
+                "client_name": "Jon Snow",
                 "email": "ecommerce@example.com",
                 "address_line_1": "Av. do Brasil n.º 101",
                 "address_line_2": "AA",
