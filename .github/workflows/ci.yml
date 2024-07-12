@@ -30,11 +30,18 @@ jobs:
           path: ecommerce
     
       - name: Use Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.8'
           cache: 'pip' # caching pip dependencies
-      
+
+      - name: Install specific pip version
+        # Requested celery==4.4.7 from https://files.......... (from -r ecommerce/requirements/dev.txt (line 73)) has invalid metadata: Expected matching RIGHT_PARENTHESIS for LEFT_PARENTHESIS, after version specifier
+        #     pytz (>dev)
+        #         ~^
+        # Please use pip<24.1 if you need to use this version.
+        run: pip install "pip<24.1"
+
       - name: Install ecommerce pip requirements
         run: pip install -r ecommerce/requirements/dev.txt
 
