@@ -195,6 +195,7 @@ def get_receipt_link(order):
             receipt_link_url += '/'
         receipt_link_url += transaction_id + '/'
         token = _get_financial_manager_setting(site, "token")
+        response = None
         try:
             logger.info("Get receipt link for transaction id [%s]", transaction_id)
             response = requests.get(
@@ -206,7 +207,7 @@ def get_receipt_link(order):
             logger.exception("Error can't get receipt link for transaction_id [%s] error: [%s]", transaction_id, e)
             return None
         finally:
-            logger.info("Received the receipt link status_code: [%d]")
+            logger.info("Received the receipt link status_code: [%d]", response.status_code if response else None)
         if response.status_code == 200:
             logger.info("Received the receipt link content: [%s]", response.content)
             return response.content
