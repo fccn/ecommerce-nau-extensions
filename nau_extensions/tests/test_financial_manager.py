@@ -46,6 +46,107 @@ class FinancialManagerNAUExtensionsTests(TestCase):
 
         # create an empty basket so we know what it's inside
         basket = create_basket(owner=owner, empty=True)
+        basket.add_product(verified_product, quantity=3)
+        basket.add_product(honor_product, quantity=2)
+
+        # creating an order will mark the card submitted
+        create_order(basket=basket)
+
+        bti = BasketTransactionIntegration.create(basket)
+
+        basket.save()
+        bti.save()
+
+        country = CountryFactory(iso_3166_1_a2="PT", printable_name="Portugal")
+        country.save()
+
+        bbi = BasketBillingInformation()
+        bbi.first_name = "Fundação"
+        bbi.last_name = "Ciência Tecnologia"
+        bbi.line1 = "Av. do Brasil n.º 101"
+        bbi.line2 = "AA"
+        bbi.line3 = "BB CC"
+        bbi.line4 = "Lisboa"
+        bbi.state = "Lisboa"
+        bbi.postcode = "1700-066"
+        bbi.country = country
+        bbi.basket = basket
+        bbi.vatin = "123456789"
+        bbi.save()
+
+        sync_request_data(bti)
+
+        self.assertDictEqual(
+            bti.request,
+            {
+                "transaction_id": basket.order_number,
+                "transaction_type": "credit",
+                "client_name": "Fundação Ciência Tecnologia",
+                "email": "ecommerce@example.com",
+                "address_line_1": "Av. do Brasil n.º 101",
+                "address_line_2": "AA, BB CC",
+                "city": "Lisboa",
+                "postal_code": "1700-066",
+                "state": "Lisboa",
+                "country_code": "PT",
+                "vat_identification_number": "123456789",
+                "vat_identification_country": "PT",
+                "total_amount_exclude_vat": Decimal("30.00"),
+                "total_amount_include_vat": Decimal("30.00"),
+                "total_discount_excl_tax": Decimal('0.00'),
+                "total_discount_incl_tax": Decimal('0.00'),
+                "currency": "EUR",
+                "payment_type": None,
+                "items": [
+                    # verified
+                    {
+                        "unit_price_excl_vat": Decimal("10.00"),
+                        "unit_price_incl_vat": Decimal("10.00"),
+                        "description": "Seat in edX Demonstration Course with verified certificate",
+                        'discount_excl_tax': Decimal('0.00'),
+                        'discount_incl_tax': Decimal('0.00'),
+                        "organization_code": "edX",
+                        "product_code": "DemoX",
+                        "product_id": "course-v1:edX+DemoX+Demo_Course",
+                        "quantity": 3,
+                        "vat_tax": Decimal("0.00"),
+                    },
+                    # honor
+                    {
+                        "unit_price_excl_vat": Decimal("0.00"),
+                        "unit_price_incl_vat": Decimal("0.00"),
+                        "description": "Seat in edX Demonstration Course with honor certificate",
+                        'discount_excl_tax': Decimal('0.00'),
+                        'discount_incl_tax': Decimal('0.00'),
+                        "organization_code": "edX",
+                        "product_code": "DemoX",
+                        "product_id": "course-v1:edX+DemoX+Demo_Course",
+                        "quantity": 2,
+                        "vat_tax": Decimal("0.00"),
+                    },
+                ],
+            },
+        )
+
+    @override_settings(OSCAR_DEFAULT_CURRENCY="EUR")
+    def test_financial_manager_sync_data_with_quantity(self):
+        """
+        Test the synchronization of data between the models and the `BasketTransactionIntegration`
+        model.
+        """
+        partner = PartnerFactory(short_code="edX")
+        course = CourseFactory(
+            id="course-v1:edX+DemoX+Demo_Course",
+            name="edX Demonstration Course",
+            partner=partner,
+        )
+        honor_product = course.create_or_update_seat("honor", False, 0)
+        verified_product = course.create_or_update_seat("verified", True, 10)
+
+        owner = UserFactory(email="ecommerce@example.com", full_name="Jon Snow")
+
+        # create an empty basket so we know what it's inside
+        basket = create_basket(owner=owner, empty=True)
         basket.add_product(verified_product)
         basket.add_product(honor_product)
 
