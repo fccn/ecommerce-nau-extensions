@@ -18,9 +18,12 @@ jobs:
           - ecommerce_repository: fccn/ecommerce
             ecommerce_ref: nau/nutmeg.master
             pip_constraint: pip<24.1
-          # - ecommerce_repository: openedx/ecommerce
-          #   ecommerce_ref: nau/redwood.master
-          #   pip_constraint: 
+            python_version: 3.8
+          - ecommerce_repository: fccn/ecommerce
+            ecommerce_ref: nau/redwood.master
+            pip_constraint: 
+            # https://github.com/overhangio/tutor-ecommerce/blob/de58c6d53a30b3e61bb4fed899ffe15a363014c8/tutorecommerce/templates/ecommerce/build/ecommerce/Dockerfile#L49C20-L49C26
+            python_version: 3.12.2
 
     steps:
       - name: Checkout Ecommerce NAU extensions
@@ -42,7 +45,7 @@ jobs:
       - name: Use Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.8'
+          python-version: '${{ matrix.python_version }}'
           cache: 'pip' # caching pip dependencies
 
       - name: Install specific pip version
