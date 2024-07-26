@@ -83,10 +83,8 @@ def sync_request_data(bti: BasketTransactionIntegration) -> dict:
         "country_code": country_code,
         "vat_identification_number": vat_identification_number,
         "vat_identification_country": vat_identification_country,
-        "total_amount_exclude_vat": order.total_excl_tax,
         "total_amount_include_vat": order.total_incl_tax,
         "total_discount_incl_tax": order.total_discount_incl_tax,
-        "total_discount_excl_tax": order.total_discount_excl_tax,
         "currency": order.currency,
         "payment_type": _get_payment_type(order),
         "items": _convert_order_lines(order),
@@ -119,15 +117,11 @@ def _convert_order_lines(order):
         course_key = CourseKey.from_string(course.id) if course else None
         organization_code = course_key.org if course else None
         product_code = course_key.course if course else None
-        unit_price_excl_tax = line.unit_price_excl_tax
         unit_price_incl_tax = line.unit_price_incl_tax
-        vat_tax = unit_price_incl_tax - unit_price_excl_tax
         result.append(
             {
                 "description": line.title,
                 "quantity": line.quantity,
-                "vat_tax": vat_tax,
-                "unit_price_excl_vat": unit_price_excl_tax,
                 "unit_price_incl_vat": unit_price_incl_tax,
                 "organization_code": organization_code,
                 "product_code": product_code,
