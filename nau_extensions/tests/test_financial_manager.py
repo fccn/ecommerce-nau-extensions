@@ -91,16 +91,13 @@ class FinancialManagerNAUExtensionsTests(TestCase):
                 "country_code": "PT",
                 "vat_identification_number": "123456789",
                 "vat_identification_country": "PT",
-                "total_amount_exclude_vat": Decimal("30.00"),
                 "total_amount_include_vat": Decimal("30.00"),
-                "total_discount_excl_tax": Decimal('0.00'),
                 "total_discount_incl_tax": Decimal('0.00'),
                 "currency": "EUR",
                 "payment_type": None,
                 "items": [
                     # verified
                     {
-                        "unit_price_excl_vat": Decimal("10.00"),
                         "unit_price_incl_vat": Decimal("10.00"),
                         "description": "Seat in edX Demonstration Course with verified certificate",
                         'discount_excl_tax': Decimal('0.00'),
@@ -109,11 +106,9 @@ class FinancialManagerNAUExtensionsTests(TestCase):
                         "product_code": "DemoX",
                         "product_id": "course-v1:edX+DemoX+Demo_Course",
                         "quantity": 3,
-                        "vat_tax": Decimal("0.00"),
                     },
                     # honor
                     {
-                        "unit_price_excl_vat": Decimal("0.00"),
                         "unit_price_incl_vat": Decimal("0.00"),
                         "description": "Seat in edX Demonstration Course with honor certificate",
                         'discount_excl_tax': Decimal('0.00'),
@@ -122,7 +117,6 @@ class FinancialManagerNAUExtensionsTests(TestCase):
                         "product_code": "DemoX",
                         "product_id": "course-v1:edX+DemoX+Demo_Course",
                         "quantity": 2,
-                        "vat_tax": Decimal("0.00"),
                     },
                 ],
             },
@@ -192,16 +186,13 @@ class FinancialManagerNAUExtensionsTests(TestCase):
                 "country_code": "PT",
                 "vat_identification_number": "123456789",
                 "vat_identification_country": "PT",
-                "total_amount_exclude_vat": Decimal("10.00"),
                 "total_amount_include_vat": Decimal("10.00"),
-                "total_discount_excl_tax": Decimal('0.00'),
                 "total_discount_incl_tax": Decimal('0.00'),
                 "currency": "EUR",
                 "payment_type": None,
                 "items": [
                     # verified
                     {
-                        "unit_price_excl_vat": Decimal("10.00"),
                         "unit_price_incl_vat": Decimal("10.00"),
                         "description": "Seat in edX Demonstration Course with verified certificate",
                         'discount_excl_tax': Decimal('0.00'),
@@ -210,11 +201,9 @@ class FinancialManagerNAUExtensionsTests(TestCase):
                         "product_code": "DemoX",
                         "product_id": "course-v1:edX+DemoX+Demo_Course",
                         "quantity": 1,
-                        "vat_tax": Decimal("0.00"),
                     },
                     # honor
                     {
-                        "unit_price_excl_vat": Decimal("0.00"),
                         "unit_price_incl_vat": Decimal("0.00"),
                         "description": "Seat in edX Demonstration Course with honor certificate",
                         'discount_excl_tax': Decimal('0.00'),
@@ -223,14 +212,12 @@ class FinancialManagerNAUExtensionsTests(TestCase):
                         "product_code": "DemoX",
                         "product_id": "course-v1:edX+DemoX+Demo_Course",
                         "quantity": 1,
-                        "vat_tax": Decimal("0.00"),
                     },
                 ],
             },
         )
 
     @override_settings(
-        NAU_EXTENSION_TAX_RATE="0.298701299",  # = 0.23/0.77,
         OSCAR_DEFAULT_CURRENCY="EUR"
     )
     def test_financial_manager_sync_data_with_tax_rate(self):
@@ -294,17 +281,14 @@ class FinancialManagerNAUExtensionsTests(TestCase):
                 "country_code": "PT",
                 "vat_identification_number": "123456789",
                 "vat_identification_country": "PT",
-                "total_amount_exclude_vat": Decimal("10.00"),
-                "total_amount_include_vat": Decimal("12.99"),
-                "total_discount_excl_tax": Decimal('0.00'),
+                "total_amount_include_vat": Decimal("10.00"),
                 "total_discount_incl_tax": Decimal('0.00'),
                 "currency": "EUR",
                 "payment_type": None,
                 "items": [
                     # verified
                     {
-                        "unit_price_excl_vat": Decimal("10.00"),
-                        "unit_price_incl_vat": Decimal("12.99"),
+                        "unit_price_incl_vat": Decimal("10.00"),
                         "description": "Seat in edX Demonstration Course with verified certificate",
                         'discount_excl_tax': Decimal('0.00'),
                         'discount_incl_tax': Decimal('0.00'),
@@ -312,11 +296,9 @@ class FinancialManagerNAUExtensionsTests(TestCase):
                         "product_code": "DemoX",
                         "product_id": "course-v1:edX+DemoX+Demo_Course",
                         "quantity": 1,
-                        "vat_tax": Decimal("2.99"),
                     },
                     # honor
                     {
-                        "unit_price_excl_vat": Decimal("0.00"),
                         "unit_price_incl_vat": Decimal("0.00"),
                         "description": "Seat in edX Demonstration Course with honor certificate",
                         'discount_excl_tax': Decimal('0.00'),
@@ -325,7 +307,6 @@ class FinancialManagerNAUExtensionsTests(TestCase):
                         "product_code": "DemoX",
                         "product_id": "course-v1:edX+DemoX+Demo_Course",
                         "quantity": 1,
-                        "vat_tax": Decimal("0.00"),
                     },
                 ],
             },
@@ -381,16 +362,13 @@ class FinancialManagerNAUExtensionsTests(TestCase):
                 "country_code": None,
                 "vat_identification_number": None,
                 "vat_identification_country": None,
-                "total_amount_exclude_vat": Decimal("10.00"),
                 "total_amount_include_vat": Decimal("10.00"),
-                "total_discount_excl_tax": Decimal("0.00"),
                 "total_discount_incl_tax": Decimal("0.00"),
                 "currency": "EUR",
                 "payment_type": None,
                 "items": [
                     # verified
                     {
-                        "unit_price_excl_vat": Decimal("10.00"),
                         "unit_price_incl_vat": Decimal("10.00"),
                         "description": "Seat in edX Demonstration Course with verified certificate",
                         "discount_excl_tax": Decimal("0.00"),
@@ -399,11 +377,9 @@ class FinancialManagerNAUExtensionsTests(TestCase):
                         "product_code": "DemoX",
                         "product_id": "course-v1:edX+DemoX+Demo_Course",
                         "quantity": 1,
-                        "vat_tax": Decimal("0.00"),
                     },
                     # honor
                     {
-                        "unit_price_excl_vat": Decimal("0.00"),
                         "unit_price_incl_vat": Decimal("0.00"),
                         "description": "Seat in edX Demonstration Course with honor certificate",
                         "discount_excl_tax": Decimal("0.00"),
@@ -412,7 +388,6 @@ class FinancialManagerNAUExtensionsTests(TestCase):
                         "product_code": "DemoX",
                         "product_id": "course-v1:edX+DemoX+Demo_Course",
                         "quantity": 1,
-                        "vat_tax": Decimal("0.00"),
                     },
                 ],
             },
