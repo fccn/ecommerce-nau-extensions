@@ -65,9 +65,8 @@ jobs:
       - name: Run unit tests
         run: ECOMMERCE_SOURCE_PATH=../ecommerce make -C ecommerce-nau-extensions test
 
-      # Can't support multiple named Open edX released of ecommerce and use the commerce lint configuration.
-      # - name: Run lint
-      #   run: ECOMMERCE_SOURCE_PATH=../ecommerce make -C ecommerce-nau-extensions lint
+      - name: Run lint
+        run: ECOMMERCE_SOURCE_PATH=../ecommerce make -C ecommerce-nau-extensions lint
 
       - name: Install gettext package
         run: sudo apt-get install -y gettext
