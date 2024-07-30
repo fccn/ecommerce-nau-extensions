@@ -73,7 +73,8 @@ lint_pylint: _prerequire
 	pylint -j 0 --rcfile=pylintrc --verbose --init-hook='import sys; sys.path.append("${ECOMMERCE_SOURCE_PATH}")' $(SRC_FOLDER_FULL_PATH)
 .PHONY: lint_pylint
 
-lint: | lint_isort lint_pycodestyle lint_pylint ## Run Python linting
+# Can't run pylint from ecommerce externally, the pylint plugins aren't being loaded.
+lint: | lint_isort lint_pycodestyle # lint_pylint ## Run Python linting
 .PHONY: lint
 
 extract_translations:  ## Extract translations from source code
