@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-12 14:12+0000\n"
+"POT-Creation-Date: 2024-09-26 13:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -69,7 +69,7 @@ msgstr "Enviado com erro"
 
 #: nau_extensions/templates/nau_extensions/checkout/basket_billing_information/address.html:9
 #: nau_extensions/templates/nau_extensions/checkout/basket_billing_information/address.html:21
-#: nau_extensions/templates/nau_extensions/checkout/checkout_partial.html:32
+#: nau_extensions/templates/nau_extensions/checkout/checkout_partial.html:33
 msgid "Billing address"
 msgstr "Endereço de faturação"
 
@@ -101,20 +101,36 @@ msgstr "Informação de faturação"
 msgid "Value-Added Tax Identification Number (VATIN)"
 msgstr "Número de Identificação Fiscal (NIF)"
 
-#: nau_extensions/templates/nau_extensions/checkout/checkout_partial.html:14
-#: nau_extensions/templates/nau_extensions/checkout/checkout_partial.html:34
-msgid "Edit"
-msgstr "Editar"
+#: nau_extensions/templates/nau_extensions/checkout/checkout_partial.html:13
+msgid ""
+"Edit bellow if you want your receipt to include a Value-Added Tax "
+"Identification Number (VATIN / NIF)."
+msgstr ""
+"Edite abaixo se quiser que o seu recibo inclua um Número de Identificação "
+"Fiscal (VATIN / NIF)"
 
-#: nau_extensions/templates/nau_extensions/checkout/checkout_partial.html:20
+#: nau_extensions/templates/nau_extensions/checkout/checkout_partial.html:18
 msgid "Country"
 msgstr "País"
 
-#: nau_extensions/templates/nau_extensions/checkout/checkout_partial.html:22
+#: nau_extensions/templates/nau_extensions/checkout/checkout_partial.html:20
 msgid "VATIN"
 msgstr "NIF"
 
-#: nau_extensions/templates/nau_extensions/checkout/receipt_partial.html:4
+#: nau_extensions/templates/nau_extensions/checkout/checkout_partial.html:26
+#: nau_extensions/templates/nau_extensions/checkout/checkout_partial.html:47
+msgid "Edit"
+msgstr "Editar"
+
+#: nau_extensions/templates/nau_extensions/checkout/checkout_partial.html:34
+msgid ""
+"Edit bellow if you want your receipt to include your address, your name or "
+"even your company name so your employer can refund you."
+msgstr ""
+"Edite abaixo se quiser que o recibo inclua a sua morada, o seu nome ou mesmo "
+"o nome da sua empresa para que o seu empregador o possa reembolsar."
+
+#: nau_extensions/templates/nau_extensions/checkout/receipt_partial.html:6
 msgid "Download receipt"
 msgstr "Descarregar recibo"
 
