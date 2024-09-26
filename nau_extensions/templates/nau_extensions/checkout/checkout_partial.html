@@ -9,41 +9,43 @@
 
     {% block basket_billing_informations %}
     <div class="col-md-5 col-sm-12 basket-billing-information-vatin">
-        <p>{% trans "Value-Added Tax Identification Number (VATIN)" as tmsg %}{{ tmsg | force_escape }}</p>
-        
-        <a href="/payment/nau_extensions/basket-billing-information/vatin/?basket_id={{ basket.id }}">{% trans "Edit" as tmsg %}{{ tmsg | force_escape }}</a>
-    
+        <p><b>{% trans "Value-Added Tax Identification Number (VATIN)" as tmsg %}{{ tmsg | force_escape }}</b></p>
+        <p>{% trans "Edit bellow if you want your receipt to include a Value-Added Tax Identification Number (VATIN / NIF)." as tmsg %}{{ tmsg | force_escape }}</p>
         <div class="row-fluid">
             {% if basket.basket_billing_information and basket.basket_billing_information.vatin %}
-                <div class="span3">
-                    <div class="well well-info">
-                        {% trans "Country" as tmsg %}{{ tmsg | force_escape }}: {{ basket.basket_billing_information.country }}
-                        <br/>
-                        {% trans "VATIN" as tmsg %}{{ tmsg | force_escape }}: {{ basket.basket_billing_information.vatin }}
-                    </div>
+            <div class="span3">
+                <div class="well well-info">
+                    {% trans "Country" as tmsg %}{{ tmsg | force_escape }}: {{ basket.basket_billing_information.country }}
+                    <br/>
+                    {% trans "VATIN" as tmsg %}{{ tmsg | force_escape }}: {{ basket.basket_billing_information.vatin }}
                 </div>
+            </div>
             {% endif %}
         </div>
+        <p>
+            <a href="/payment/nau_extensions/basket-billing-information/vatin/?basket_id={{ basket.id }}">{% trans "Edit" as tmsg %}{{ tmsg | force_escape }}</a>
+        </p>
     </div>
     {% endblock %}
 
     {% block user_addresses %}
     <div class="col-md-5 col-sm-12 basket-billing-information-address">
-        <p>{% trans "Billing address" as tmsg %}{{ tmsg | force_escape }}</p>
-
-        <a href="/payment/nau_extensions/basket-billing-information/address/?basket_id={{ basket.id }}">{% trans "Edit" as tmsg %}{{ tmsg | force_escape }}</a>
-
+        <p><b>{% trans "Billing address" as tmsg %}{{ tmsg | force_escape }}</b></p>
+        <p>{% trans "Edit bellow if you want your receipt to include your address, your name or even your company name so your employer can refund you." as tmsg %}{{ tmsg | force_escape }}</p>
         <div class="row-fluid">
             {% if basket.basket_billing_information and basket.basket_billing_information.active_address_fields|length > 0 %}
-                <div class="span3">
-                    <div class="well well-info">
+            <div class="span3">
+                <div class="well well-info">
                     {% for field in basket.basket_billing_information.active_address_fields %}
-                        {{ field }}<br/>
+                    {{ field }}<br/>
                     {% endfor %}
-                    </div>
                 </div>
+            </div>
             {% endif %}
         </div>
+        <p>
+            <a href="/payment/nau_extensions/basket-billing-information/address/?basket_id={{ basket.id }}">{% trans "Edit" as tmsg %}{{ tmsg | force_escape }}</a>
+        </p>
     </div>
     {% endblock %}
 
