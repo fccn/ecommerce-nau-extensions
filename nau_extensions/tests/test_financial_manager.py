@@ -99,7 +99,7 @@ class FinancialManagerNAUExtensionsTests(TestCase):
                     # verified
                     {
                         "unit_price_incl_vat": Decimal("10.00"),
-                        "description": "Seat in edX Demonstration Course with verified certificate",
+                        "description": "Lugar em edX Demonstration Course com certificado pago",
                         'discount_excl_tax': Decimal('0.00'),
                         'discount_incl_tax': Decimal('0.00'),
                         "organization_code": "edX",
@@ -110,7 +110,7 @@ class FinancialManagerNAUExtensionsTests(TestCase):
                     # honor
                     {
                         "unit_price_incl_vat": Decimal("0.00"),
-                        "description": "Seat in edX Demonstration Course with honor certificate",
+                        "description": "Lugar em edX Demonstration Course com certificado grátis",
                         'discount_excl_tax': Decimal('0.00'),
                         'discount_incl_tax': Decimal('0.00'),
                         "organization_code": "edX",
@@ -194,7 +194,7 @@ class FinancialManagerNAUExtensionsTests(TestCase):
                     # verified
                     {
                         "unit_price_incl_vat": Decimal("10.00"),
-                        "description": "Seat in edX Demonstration Course with verified certificate",
+                        "description": "Lugar em edX Demonstration Course com certificado pago",
                         'discount_excl_tax': Decimal('0.00'),
                         'discount_incl_tax': Decimal('0.00'),
                         "organization_code": "edX",
@@ -205,7 +205,7 @@ class FinancialManagerNAUExtensionsTests(TestCase):
                     # honor
                     {
                         "unit_price_incl_vat": Decimal("0.00"),
-                        "description": "Seat in edX Demonstration Course with honor certificate",
+                        "description": "Lugar em edX Demonstration Course com certificado grátis",
                         'discount_excl_tax': Decimal('0.00'),
                         'discount_incl_tax': Decimal('0.00'),
                         "organization_code": "edX",
@@ -289,7 +289,7 @@ class FinancialManagerNAUExtensionsTests(TestCase):
                     # verified
                     {
                         "unit_price_incl_vat": Decimal("10.00"),
-                        "description": "Seat in edX Demonstration Course with verified certificate",
+                        "description": "Lugar em edX Demonstration Course com certificado pago",
                         'discount_excl_tax': Decimal('0.00'),
                         'discount_incl_tax': Decimal('0.00'),
                         "organization_code": "edX",
@@ -300,7 +300,7 @@ class FinancialManagerNAUExtensionsTests(TestCase):
                     # honor
                     {
                         "unit_price_incl_vat": Decimal("0.00"),
-                        "description": "Seat in edX Demonstration Course with honor certificate",
+                        "description": "Lugar em edX Demonstration Course com certificado grátis",
                         'discount_excl_tax': Decimal('0.00'),
                         'discount_incl_tax': Decimal('0.00'),
                         "organization_code": "edX",
@@ -370,7 +370,7 @@ class FinancialManagerNAUExtensionsTests(TestCase):
                     # verified
                     {
                         "unit_price_incl_vat": Decimal("10.00"),
-                        "description": "Seat in edX Demonstration Course with verified certificate",
+                        "description": "Lugar em edX Demonstration Course com certificado pago",
                         "discount_excl_tax": Decimal("0.00"),
                         "discount_incl_tax": Decimal("0.00"),
                         "organization_code": "edX",
@@ -381,7 +381,7 @@ class FinancialManagerNAUExtensionsTests(TestCase):
                     # honor
                     {
                         "unit_price_incl_vat": Decimal("0.00"),
-                        "description": "Seat in edX Demonstration Course with honor certificate",
+                        "description": "Lugar em edX Demonstration Course com certificado grátis",
                         "discount_excl_tax": Decimal("0.00"),
                         "discount_incl_tax": Decimal("0.00"),
                         "organization_code": "edX",
