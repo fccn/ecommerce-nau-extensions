@@ -38,6 +38,18 @@ To create migrations for this project the next command inside ecommerce containe
 Then run the migrations::
     python manage.py migrate
 
+
+Use specific Python version, use ecommerce requirements::
+    pyenv shell 3.12
+    python -m venv venv
+    . venv/bin/activate
+    pip install -r ../ecommerce/requirements.txt
+    pip install -r ../ecommerce/requirements/dev.txt
+
+Lint::
+    ECOMMERCE_SOURCE_PATH=`pwd`/../ecommerce make lint
+
+
 License
 =======
 

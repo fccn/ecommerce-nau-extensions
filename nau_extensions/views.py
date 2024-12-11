@@ -15,6 +15,7 @@ from nau_extensions.forms import (BasketBillingInformationAddressForm,
                                   BasketBillingInformationVATINForm)
 from nau_extensions.models import BasketBillingInformation
 from nau_extensions.serializers import OrderReceiptLinkSerializer
+from nau_extensions.utils import get_default_country
 from oscar.core.loading import get_class, get_model
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
@@ -40,12 +41,11 @@ class BasketBillingInformationCreateUpdateView(generic.UpdateView):
 
     def get_object(self, queryset=None):
         try:
-            bbi, created = BasketBillingInformation.objects.get_or_create(  # pylint: disable=unused-variable
+            return BasketBillingInformation.objects.get(  # pylint: disable=unused-variable
                 basket=self.basket
             )
-        except AttributeError:
-            return None
-        return bbi
+        except BasketBillingInformation.DoesNotExist:
+            return BasketBillingInformation(country=get_default_country())
 
     def get(self, request, *args, **kwargs):
         self.basket = shortcuts.get_object_or_404(  # pylint: disable=attribute-defined-outside-init
