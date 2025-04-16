@@ -36,8 +36,8 @@ def controlNIF(nif):
         return False
 
     # verificar validade do carácter inicial do NIF
-    if nif[0] not in "125689":
-        return False
+    # if nif[0] not in "125689":
+    #     return False
 
     # verificar validade
     return _valN(nif)
