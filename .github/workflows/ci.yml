@@ -27,7 +27,7 @@ jobs:
         with:
           # Relative path to place the repository
           path: ecommerce-nau-extensions
-      
+
       - name: Checkout ecommerce
         uses: actions/checkout@v4
         with:
@@ -37,7 +37,7 @@ jobs:
           ref: ${{ matrix.ecommerce_ref }}
           # Relative path to place the repository
           path: ecommerce
-    
+
       - name: Use Python
         uses: actions/setup-python@v5
         with:
@@ -52,11 +52,8 @@ jobs:
         # Please use pip<24.1 if you need to use this version.
         run: pip install "${{ matrix.pip_constraint }}"
 
-      - name: Install ecommerce pip requirements
-        run: pip install -r ecommerce/requirements/dev.txt
-
-      - name: Install Ecommerce NAU extensions
-        run: pip install -e ecommerce-nau-extensions
+      - name: Install requirements
+        run: ECOMMERCE_SOURCE_PATH=../ecommerce make -C ecommerce-nau-extensions requirements
 
       - name: Run unit tests
         run: ECOMMERCE_SOURCE_PATH=../ecommerce make -C ecommerce-nau-extensions test
