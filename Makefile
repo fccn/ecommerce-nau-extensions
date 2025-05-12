@@ -10,7 +10,7 @@ ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 # but you can use other folder, you just have to change this environment variable like:
 #   ECOMMERCE_SOURCE_PATH=/nau make test
 #   make ECOMMERCE_SOURCE_PATH=/nau test
-ECOMMERCE_SOURCE_PATH ?= /edx/app/ecommerce/ecommerce
+ECOMMERCE_SOURCE_PATH ?= $(ROOT_DIR)/../ecommerce
 SRC_FOLDER_RELATIVE_PATH ?= nau_extensions
 SRC_FOLDER_FULL_PATH=$(ROOT_DIR)/$(SRC_FOLDER_RELATIVE_PATH)
 LOCALES=--locale en --locale pt_PT
@@ -28,6 +28,12 @@ help:
 _prerequire:
 	@if [ ! -d "${ECOMMERCE_SOURCE_PATH}" ]; then { echo "Ecommerce directory doesn't exist.\n  ECOMMERCE_SOURCE_PATH=${ECOMMERCE_SOURCE_PATH}\nPlease check if that directory exist or change the default value using:\n  ECOMMERCE_SOURCE_PATH=~/<different path>/ecommerce make <target>" ; exit 1; } fi
 .PHONY: _prerequire
+
+requirements: | _prerequire ## Install the ecommerce requirements
+	@echo "Installing ecommerce requirements"
+	@pip install -r ${ECOMMERCE_SOURCE_PATH}/requirements/production.txt ${ECOMMERCE_SOURCE_PATH}/requirements/dev.txt
+	@pip install -e $(ROOT_DIR)
+.PHONY: requirements
 
 test: | _prerequire ## Run all the tests, to run a specific test run: make test `pwd`/nau_extensions/tests/test_XPTO.py
 	@args="$(filter-out $@,$(MAKECMDGOALS))" && \
