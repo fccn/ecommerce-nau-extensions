@@ -31,7 +31,7 @@ _prerequire:
 
 requirements: | _prerequire ## Install the ecommerce requirements
 	@echo "Installing ecommerce requirements"
-	@pip install -r ${ECOMMERCE_SOURCE_PATH}/requirements/production.txt ${ECOMMERCE_SOURCE_PATH}/requirements/dev.txt
+	@pip install -r ${ECOMMERCE_SOURCE_PATH}/requirements/production.txt -r ${ECOMMERCE_SOURCE_PATH}/requirements/dev.txt
 	@pip install -e $(ROOT_DIR)
 .PHONY: requirements
 
