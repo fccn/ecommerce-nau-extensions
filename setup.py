@@ -34,7 +34,7 @@ setup(
         'Programming Language :: Python :: 3.8',
     ],
     install_requires=[
-        'Django~=3.2',
+        'Django>=3.2',
     ],
     packages=[
         'nau_extensions',
