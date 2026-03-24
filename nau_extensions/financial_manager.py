@@ -142,42 +142,132 @@ def send_to_financial_manager_if_enabled(
     """
     site = basket_transaction_integration.basket.site
     if is_financial_manager_enabled(site):
+        transaction_id = basket_transaction_integration.basket.order_number
+        logger.info(
+            "Starting financial manager integration for transaction_id [%s]",
+            transaction_id,
+        )
+
         sync_request_data(basket_transaction_integration)
         url = _get_financial_manager_setting(site, "url")
         token = _get_financial_manager_setting(site, "token")
-        response = requests.post(
+
+        request_data = basket_transaction_integration.request
+        logger.info(
+            "Sending request to financial manager - URL: [%s], transaction_id: [%s]",
             url,
-            json=basket_transaction_integration.request,
-            headers={"Authorization": token},
-            timeout=30,
+            transaction_id,
+        )
+        logger.debug(
+            "Request payload for transaction_id [%s]: [%s]",
+            transaction_id,
+            request_data,
+        )
+        logger.debug(
+            "Authorization token configured: [%s]",
+            "***MASKED! SEE THE SERVICE CONFIG***" if token else "NOT_SET",
         )
 
-        # Convert response to json
-        try:
-            response_json = response.json()
-        except Exception as e:  # pylint: disable=broad-except
-            response_json = None
-            logger.exception("Error can't parse send to financial manager response as json [%s]", e)
-
-        # update state
+        response = None
+        response_json = None
         state = BasketTransactionIntegration.SENT_WITH_ERROR
-        if response.status_code == 201:
-            state = BasketTransactionIntegration.SENT_WITH_SUCCESS
 
-        # is duplicate
-        if response.status_code == 400:
-            transaction_id_error = response_json.get("transaction_id", [])
-            if len(transaction_id_error) > 0 \
-                    and transaction_id_error[0] == "transaction with this transaction id already exists.":
+        try:
+            response = requests.post(
+                url,
+                json=request_data,
+                headers={"Authorization": token},
+                timeout=30,
+            )
+            logger.info(
+                "Received response from financial manager - transaction_id: [%s], status_code: [%d]",
+                transaction_id,
+                response.status_code,
+            )
+            logger.debug(
+                "Response content for transaction_id [%s]: [%s]",
+                transaction_id,
+                getattr(response, 'text', f'[ERROR: Response object of type {type(response).__name__} has no .text attribute]'),
+            )
+
+            # Convert response to json
+            try:
+                response_json = response.json()
+            except Exception as e:  # pylint: disable=broad-except
+                response_json = None
+                logger.exception(
+                    "Error parsing response as JSON for transaction_id [%s]: [%s]",
+                    transaction_id,
+                    e,
+                )
+
+            # update state based on response status
+            if response.status_code == 201:
                 state = BasketTransactionIntegration.SENT_WITH_SUCCESS
+                logger.info(
+                    "Transaction successfully sent for transaction_id [%s]",
+                    transaction_id,
+                )
+            else:
+                # is duplicate
+                if response.status_code == 400 and response_json:
+                    transaction_id_error = response_json.get("transaction_id", [])
+                    if len(transaction_id_error) > 0 \
+                            and transaction_id_error[0] == "transaction with this transaction id already exists.":
+                        state = BasketTransactionIntegration.SENT_WITH_SUCCESS
+                        logger.info(
+                            "Transaction already exists in financial manager for transaction_id [%s]",
+                            transaction_id,
+                        )
+                    else:
+                        logger.warning(
+                            "Transaction rejected by financial manager for transaction_id [%s]: [%s]",
+                            transaction_id,
+                            response_json,
+                        )
+                else:
+                    logger.warning(
+                        "Financial manager returned error status for transaction_id [%s], status_code: [%d], response: [%s]",
+                        transaction_id,
+                        response.status_code,
+                        response_json or getattr(response, 'text', f'[ERROR: Response object of type {type(response).__name__} has no .text attribute]'),
+                    )
+
+        except requests.exceptions.Timeout as e:
+            logger.error(
+                "Timeout while sending request to financial manager for transaction_id [%s]: [%s]",
+                transaction_id,
+                e,
+            )
+        except requests.exceptions.ConnectionError as e:
+            logger.error(
+                "Connection error while sending request to financial manager for transaction_id [%s]: [%s]",
+                transaction_id,
+                e,
+            )
+        except requests.exceptions.RequestException as e:
+            logger.exception(
+                "Request exception while sending to financial manager for transaction_id [%s]: [%s]",
+                transaction_id,
+                e,
+            )
+        except Exception as e:  # pylint: disable=broad-except
+            logger.exception(
+                "Unexpected error while sending to financial manager for transaction_id [%s]: [%s]",
+                transaction_id,
+                e,
+            )
 
         basket_transaction_integration.state = state
-
-        # save the response output
-
         basket_transaction_integration.response = response_json
         basket_transaction_integration.save()
+        logger.info(
+            "Financial manager integration completed for transaction_id [%s], state: [%s]",
+            transaction_id,
+            state,
+        )
         return True
+    logger.debug("Financial manager not enabled for site, skipping integration")
     return False
 
 

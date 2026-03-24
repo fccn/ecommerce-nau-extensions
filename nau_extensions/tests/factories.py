@@ -53,3 +53,15 @@ class MockResponse:
         The Json data
         """
         return self.json_data
+
+    @property
+    def text(self):
+        """
+        The text representation of the response (for compatibility with requests.Response)
+        """
+        import json
+        if self.json_data is not None:
+            if isinstance(self.json_data, (dict, list)):
+                return json.dumps(self.json_data)
+            return str(self.json_data)
+        return ""
