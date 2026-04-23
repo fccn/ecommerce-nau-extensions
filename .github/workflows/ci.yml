@@ -16,7 +16,7 @@ jobs:
       matrix:
         include:
           - ecommerce_repository: fccn/ecommerce
-            ecommerce_ref: nau/redwood.master
+            ecommerce_ref: nau/teak.master
             pip_constraint: 
             # https://github.com/overhangio/tutor-ecommerce/blob/de58c6d53a30b3e61bb4fed899ffe15a363014c8/tutorecommerce/templates/ecommerce/build/ecommerce/Dockerfile#L49C20-L49C26
             python_version: 3.12
@@ -46,11 +46,14 @@ jobs:
 
       - name: Install specific pip version
         if: "${{ matrix.pip_constraint != '' }}"
-        # Requested celery==4.4.7 from https://files.......... (from -r ecommerce/requirements/dev.txt (line 73)) has invalid metadata: Expected matching RIGHT_PARENTHESIS for LEFT_PARENTHESIS, after version specifier
-        #     pytz (>dev)
-        #         ~^
-        # Please use pip<24.1 if you need to use this version.
         run: pip install "${{ matrix.pip_constraint }}"
+
+      - name: Patch ecommerce requirements for Python 3.12
+        run: |
+          echo "Patching ecommerce requirements for Python 3.12 compatibility"
+          sed -i 's/nodeenv==1\.1\.1/nodeenv==1.10.0/g' ecommerce/requirements/production.txt
+          # Pin setuptools to a version that includes pkg_resources
+          echo "setuptools==69.5.1" >> ecommerce/requirements/production.txt
 
       - name: Install requirements
         run: ECOMMERCE_SOURCE_PATH=../ecommerce make -C ecommerce-nau-extensions requirements
