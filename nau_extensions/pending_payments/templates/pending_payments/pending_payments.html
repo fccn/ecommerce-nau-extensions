@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Pending MB Payments</h2>
+<p>Below are your pending MB payment references. If you have already paid, click "Check Payment Status" to refresh.</p>
+<table>
+    <thead>
+        <tr>
+            <th>Reference</th>
+            <th>Entity</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for ref in mb_references %}
+        <tr>
+            <td>{{ ref.reference }}</td>
+            <td>{{ ref.entity }}</td>
+            <td>{{ ref.amount }}</td>
+            <td>{{ ref.status }}</td>
+            <td>
+                <form method="post" action="">
+                    {% csrf_token %}
+                    <input type="hidden" name="reference_id" value="{{ ref.id }}">
+                    <button type="submit">Check Payment Status</button>
+                </form>
+            </td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="5">No pending MB payments found.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
