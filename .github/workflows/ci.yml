@@ -17,6 +17,10 @@ jobs:
         include:
           - ecommerce_repository: fccn/ecommerce
             ecommerce_ref: nau/teak.master
+            # The tests of the asynchronous payment flow exercise the real
+            # `paygate.pending_orders`, so the plugin has to be installed.
+            paygate_repository: fccn/ecommerce-plugin-paygate
+            paygate_ref: main
             pip_constraint: 
             # https://github.com/overhangio/tutor-ecommerce/blob/de58c6d53a30b3e61bb4fed899ffe15a363014c8/tutorecommerce/templates/ecommerce/build/ecommerce/Dockerfile#L49C20-L49C26
             python_version: 3.12
@@ -38,6 +42,16 @@ jobs:
           # Relative path to place the repository
           path: ecommerce
 
+      - name: Checkout PayGate
+        uses: actions/checkout@v4
+        with:
+          # Repository name with owner
+          repository: ${{ matrix.paygate_repository }}
+          # Change the branch to checkout
+          ref: ${{ matrix.paygate_ref }}
+          # Relative path to place the repository
+          path: ecommerce-plugin-paygate
+
       - name: Use Python
         uses: actions/setup-python@v5
         with:
@@ -57,6 +71,11 @@ jobs:
 
       - name: Install requirements
         run: ECOMMERCE_SOURCE_PATH=../ecommerce make -C ecommerce-nau-extensions requirements
+
+      - name: Install PayGate
+        # `nau_extensions` imports paygate lazily and copes with its absence, but
+        # the tests of the payment-status endpoint import it directly.
+        run: pip install -e ecommerce-plugin-paygate
 
       - name: Run unit tests
         run: ECOMMERCE_SOURCE_PATH=../ecommerce make -C ecommerce-nau-extensions test
