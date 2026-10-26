@@ -29,6 +29,21 @@ edit the `ecommerce/settings/private.py` file add change to::
         }
     }
 
+Exporting the orders
+====================
+
+``export_orders`` writes the orders in the ``Complete`` status to a JSON Lines file, one order per
+line, with the user, amounts (including the tax and discount split), payment source, raw payment
+processor payload and lines. It is the hand-over of the sales history to the LMS payments plugin
+(``import_orders`` there) and the archive of that history once this service is gone::
+
+    python manage.py export_orders --output /tmp/orders.jsonl
+    python manage.py export_orders --output /tmp/orders.jsonl --site ecommerce.nau.edu.pt --with-receipt-links
+
+``--with-receipt-links`` resolves the Financial Manager receipt link of every order, one request
+per order. ``--skip-free`` leaves out the zero-value orders. Orders with a completed refund are
+exported with status ``refunded``, the others with ``paid``.
+
 Development
 =============
 
